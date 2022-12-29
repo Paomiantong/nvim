@@ -69,8 +69,8 @@ opt.number = true
 opt.signcolumn = 'yes'
 opt.spelloptions = 'camel'
 
-opt.textwidth = 100
-opt.colorcolumn = '100'
+--opt.textwidth = 100
+--opt.colorcolumn = '100'
 -- opt.conceallevel = 2
 -- opt.concealcursor = 'niv'
 

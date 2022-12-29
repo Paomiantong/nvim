@@ -2,25 +2,49 @@
 -- date: 2022-07-02
 -- License: MIT
 
-local plugin = require('core.pack').register_plugin
+local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
-plugin({ 'glepnir/zephyr-nvim', config = conf.zephyr })
+package({ 'folke/tokyonight.nvim', config = conf.tokyonight })
 
-plugin({ 'glepnir/dashboard-nvim', config = conf.dashboard })
+package({ 'glepnir/dashboard-nvim', config = conf.dashboard })
 
-plugin({
+package({
   'glepnir/galaxyline.nvim',
-  branch = 'main',
   config = conf.galaxyline,
-  requires = 'kyazdani42/nvim-web-devicons',
+  dependencies = { 'kyazdani42/nvim-web-devicons' } ,
 })
 
-plugin({
+package({
   'kyazdani42/nvim-tree.lua',
   cmd = 'NvimTreeToggle',
   config = conf.nvim_tree,
-  requires = 'kyazdani42/nvim-web-devicons',
+  dependencies = { 'kyazdani42/nvim-web-devicons' },
 })
 
-plugin({ 'akinsho/nvim-bufferline.lua', config = conf.nvim_bufferline, requires = 'kyazdani42/nvim-web-devicons' })
+package({ 'akinsho/nvim-bufferline.lua', config = conf.nvim_bufferline, dependencies = { 'kyazdani42/nvim-web-devicons' } })
+
+local enable_indent_filetype = {
+  'go',
+  'lua',
+  'sh',
+  'rust',
+  'cpp',
+  'typescript',
+  'typescriptreact',
+  'javascript',
+  'json',
+  'python',
+}
+
+package({
+  'lukas-reineke/indent-blankline.nvim',
+  ft = enable_indent_filetype,
+  config = conf.indent_blankline,
+})
+
+package({
+  'lewis6991/gitsigns.nvim',
+  event = { 'BufRead', 'BufNewFile' },
+  config = conf.gitsigns,
+})
