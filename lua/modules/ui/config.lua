@@ -13,7 +13,7 @@ function config.galaxyline()
 end
 
 function config.dashboard()
-  local home = os.getenv('HOME')
+--  local home = os.getenv('HOME')
   local db = require('dashboard')
 --  db.session_directory = home .. '/.cache/nvim/session'
 --  db.preview_command = 'cat | lolcat -F 0.3'

@@ -38,16 +38,16 @@ local colors = {
     red = '#ec5f67'
 }
 
-local function lsp_status(status)
-    local shorter_stat = ''
-    for match in string.gmatch(status, "[^%s]+")  do
-        local err_warn = string.find(match, "^[WE]%d+", 0)
-        if not err_warn then
-            shorter_stat = shorter_stat .. ' ' .. match
-        end
-    end
-    return shorter_stat
-end
+--local function lsp_status(status)
+--    local shorter_stat = ''
+--    for match in string.gmatch(status, "[^%s]+")  do
+--        local err_warn = string.find(match, "^[WE]%d+", 0)
+--        if not err_warn then
+--            shorter_stat = shorter_stat .. ' ' .. match
+--        end
+--    end
+--    return shorter_stat
+--end
 
 
 --local function get_coc_lsp()
@@ -276,7 +276,7 @@ gls.left[15] = {
 }
 
 
-gls.left[16] = {
+gls.right[1] = {
   ShowLspClient = {
     condition = function()
       local tbl = { ['dashboard'] = true, [''] = true }
@@ -299,23 +299,23 @@ gls.left[16] = {
 --  }
 --}
 
-gls.right[1] = {
+gls.right[2] = {
     WhiteSpaceEdge = {
         provider = function() return ' ' end,
         highlight = {colors.line_bg,colors.green},
-        separator = '',
+        separator = ' ',
         separator_highlight = {colors.green, colors.bg}
     },
 }
 
-gls.right[2]= {
+gls.right[3]= {
   FileEncode = {
     provider = 'FileEncode',
     highlight = {colors.bg,colors.green,'bold'},
   },
 }
 
-gls.right[3]= {
+gls.right[4]= {
   FileFormat = {
     provider = {'FileFormat', function () return ' ' end},
     highlight = {colors.bg,colors.green,'bold'},
@@ -324,7 +324,7 @@ gls.right[3]= {
   },
 }
 
-gls.right[4] = {
+gls.right[5] = {
   LineInfo = {
     provider = 'LineColumn',
     highlight = {colors.darkgray,colors.darknavy,'bold'},
@@ -333,7 +333,7 @@ gls.right[4] = {
   },
 }
 
-gls.right[5] = {
+gls.right[6] = {
   PerCent = {
     provider = 'LinePercent',
     highlight = {colors.darkgray,colors.darknavy,'bold'},
@@ -361,11 +361,13 @@ gls.short_line_left[2] = {
   }
 }
 
+local quickRun = require('internal.quickrun')
 
 gls.short_line_left[3] = {
   RunnerInfo = {
     provider = function ()
-        return ' '..vim.fn["qrun#GetJobStatus"]()..'  JobID:' .. vim.fn["qrun#GetJobId"]() .. ' '
+      local status  = quickRun.get_current_job_status()
+      return ' '.. (status.running and 'Running' or 'Done') ..'  JobID:' .. status.jobId .. ' '
     end,
     separator = '',
     condition = function ()

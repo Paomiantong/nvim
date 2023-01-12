@@ -5,7 +5,7 @@
 local package = require('core.pack').package
 local conf = require('modules.completion.config')
 
-package({ 'williamboman/mason.nvim', config = conf.mason })
+package()
 
 package({
   'neovim/nvim-lspconfig',
@@ -13,7 +13,10 @@ package({
   -- config your language filetype in here
   ft = { 'lua', 'rust', 'c', 'cpp' },
   config = conf.nvim_lsp,
-  dependencies = { 'glepnir/lspsaga.nvim', config = conf.lspsaga }
+  dependencies = {
+    { 'williamboman/mason.nvim', config = conf.mason },
+    { 'glepnir/lspsaga.nvim', config = conf.lspsaga },
+  }
 })
 
 package({
