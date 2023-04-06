@@ -1,28 +1,35 @@
--- author: glepnr https://github.com/glepnir
--- date: 2022-07-02
--- License: MIT
 -- recommend plugins key defines in this file
 
-require('keymap.config')
-local key = require('core.keymap')
-local nmap = key.nmap
-local silent, noremap = key.silent, key.noremap
-local opts = key.new_opts
-local cmd = key.cmd
+require('keymap.remap')
+local map = require('core.keymap')
+local cmd = map.cmd
 
--- usage of plugins
-nmap({
-  -- packer
-  { '<Leader>pu', cmd('Lazy update'), opts(noremap, silent) },
-  { '<Leader>pi', cmd('Lazy install'), opts(noremap, silent) },
-  -- dashboard
-  { '<Leader>n', cmd('DashboardNewFile'), opts(noremap, silent) },
-  { '<Leader>ss', cmd('SessionSave'), opts(noremap, silent) },
-  { '<Leader>sl', cmd('SessionLoad'), opts(noremap, silent) },
-  -- nvimtree
-  { '<Leader>e', cmd('NvimTreeToggle'), opts(noremap, silent) },
-  -- Telescope
-  { '<Leader>b', cmd('Telescope buffers'), opts(noremap, silent) },
-  { '<Leader>fa', cmd('Telescope live_grep'), opts(noremap, silent) },
-  { '<Leader>ff', cmd('Telescope find_files'), opts(noremap, silent) },
+map.n({
+    -- packer
+    ['<Leader>pu'] = cmd('Lazy update'),
+    ['<Leader>pi'] = cmd('Lazy install'),
+    -- dashboard
+    ['<Leader>n'] = cmd('Dashboard'),
+    -- nvimtree
+    ['<Leader>e'] = cmd('NvimTreeToggle'),
+    -- telescope
+    ['<Leader>tf'] = cmd('Telescope find_files')
 })
+
+-- Lspsaga
+-- floaterminal
+map.nt('<A-d>', cmd('Lspsaga term_toggle'))
+map.nx({
+    -- code action
+    ['<A-Enter>'] = cmd('Lspsaga code_action'),
+    -- outline
+    ['<Leader>o'] = cmd('Lspsaga outline')
+})
+-- hover_doc
+map.n('<Leader>h', cmd('Lspsaga hover_doc<CR>'))
+-- If you want to keep the hover window in the top right hand corner,
+-- you can pass the ++keep argument
+-- Note that if you use hover with ++keep, pressing this key again will
+-- close the hover window. If you want to jump to the hover window
+-- you should use the wincmd command "<C-w>w"
+-- map.n('<A-a>', cmd('Lspsaga hover_doc ++keep<CR>'))

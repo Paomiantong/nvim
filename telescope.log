@@ -1,0 +1,27 @@
+[WARN  2023/4/6 20:59:58] .../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:493: Finder failed with msg:  ...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: rg: Executable not found
+stack traceback:
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: in function 'convert_opts'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:17: in function 'new'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:63: in function 'spawn'
+	...elescope.nvim/lua/telescope/finders/async_job_finder.lua:49: in function 'finder'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:489: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488>
+	[C]: in function 'pcall'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:450>
+[WARN  2023/4/6 21:00:03] .../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:493: Finder failed with msg:  ...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: rg: Executable not found
+stack traceback:
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: in function 'convert_opts'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:17: in function 'new'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:63: in function 'spawn'
+	...elescope.nvim/lua/telescope/finders/async_job_finder.lua:49: in function 'finder'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:489: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488>
+	[C]: in function 'pcall'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:450>
+[WARN  2023/4/6 21:00:03] .../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:493: Finder failed with msg:  ...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: rg: Executable not found
+stack traceback:
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:297: in function 'convert_opts'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:17: in function 'new'
+	...Config/nvim-data/lazy/telescope.nvim/lua/telescope/_.lua:63: in function 'spawn'
+	...elescope.nvim/lua/telescope/finders/async_job_finder.lua:49: in function 'finder'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:489: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488>
+	[C]: in function 'pcall'
+	.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:488: in function <.../nvim-data/lazy/telescope.nvim/lua/telescope/pickers.lua:450>
