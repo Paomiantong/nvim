@@ -3,39 +3,39 @@ local gls = gl.section
 local buffer = require('galaxyline.provider_buffer')
 
 gl.short_line_list = {
-    'dashboard',
-    'runner',
-    'vista',
-    'dbui',
-    'term',
-    'NvimTree',
-    'fugitive',
-    'fugitiveblame',
-    'plug',
-    'packer'
+  'dashboard',
+  'runner',
+  'vista',
+  'dbui',
+  'term',
+  'NvimTree',
+  'fugitive',
+  'fugitiveblame',
+  'plug',
+  'packer',
 }
 
 local colors = {
-    bg = '#282c34',
-    line_bg = '#353644',
-    fg = '#8FBCBB',
-    fg_green = '#65a380',
+  bg = '#282c34',
+  line_bg = '#353644',
+  fg = '#8FBCBB',
+  fg_green = '#65a380',
 
-    gray = '#3e4452',
-    lightgray = '#282c34',
-    darknavy= '#2c323d',
-    darkgray= '#abb2bf',
+  gray = '#3e4452',
+  lightgray = '#282c34',
+  darknavy = '#2c323d',
+  darkgray = '#abb2bf',
 
-    yellow = '#fabd2f',
-    cyan = '#008080',
-    darkblue = '#081633',
-    green = '#98C379',
-    orange = '#FF8800',
-    --purple = '#5d4d7a',
-    purple = '#C678DD',
-    magenta = '#c678dd',
-    blue = '#51afef';
-    red = '#ec5f67'
+  yellow = '#fabd2f',
+  cyan = '#008080',
+  darkblue = '#081633',
+  green = '#98C379',
+  orange = '#FF8800',
+  --purple = '#5d4d7a',
+  purple = '#C678DD',
+  magenta = '#c678dd',
+  blue = '#51afef',
+  red = '#ec5f67',
 }
 
 --local function lsp_status(status)
@@ -48,7 +48,6 @@ local colors = {
 --    end
 --    return shorter_stat
 --end
-
 
 --local function get_coc_lsp()
 --  local status = vim.fn['coc#status']()
@@ -79,12 +78,12 @@ local colors = {
 --end
 
 local function trailing_whitespace()
-    local trail = vim.fn.search("\\s$", "nw")
-    if trail ~= 0 then
-        return ' '
-    else
-        return nil
-    end
+  local trail = vim.fn.search('\\s$', 'nw')
+  if trail ~= 0 then
+    return ' '
+  else
+    return nil
+  end
 end
 
 --CocStatus = get_diagnostic_info
@@ -92,11 +91,11 @@ end
 TrailingWhiteSpace = trailing_whitespace
 
 local function has_file_type()
-    local f_type = vim.bo.filetype
-    if not f_type or f_type == '' then
-        return false
-    end
-    return true
+  local f_type = vim.bo.filetype
+  if not f_type or f_type == '' then
+    return false
+  end
+  return true
 end
 
 local buffer_not_empty = function()
@@ -107,34 +106,34 @@ local buffer_not_empty = function()
 end
 
 local mode_color = function()
-    local mode_colors = {
-        [110] = colors.green,
-        [105] = colors.blue,
-        [99] = colors.red,
-        [116] = colors.blue,
-        [118] = colors.purple,
-        [22] = colors.purple,
-        [86] = colors.purple,
-        [82] = colors.red,
-        [115] = colors.red,
-        [83] = colors.red,
-    }
+  local mode_colors = {
+    [110] = colors.green,
+    [105] = colors.blue,
+    [99] = colors.red,
+    [116] = colors.blue,
+    [118] = colors.purple,
+    [22] = colors.purple,
+    [86] = colors.purple,
+    [82] = colors.red,
+    [115] = colors.red,
+    [83] = colors.red,
+  }
 
-    local color = mode_colors[vim.fn.mode():byte()]
-    if color ~= nil then
-        return color
-    else
-        return colors.purple
-    end
+  local color = mode_colors[vim.fn.mode():byte()]
+  if color ~= nil then
+    return color
+  else
+    return colors.purple
+  end
 end
 
 gls.left[1] = {
   FirstElement = {
     provider = function()
-        vim.api.nvim_command('hi GalaxyViModeBF guibg='.. mode_color())
-        return '▊ '
+      vim.api.nvim_command('hi GalaxyViModeBF guibg=' .. mode_color())
+      return '▊ '
     end,
-    highlight = 'GalaxyViModeBF'
+    highlight = 'GalaxyViModeBF',
   },
 }
 gls.left[2] = {
@@ -154,31 +153,31 @@ gls.left[2] = {
         [83] = 'S-LINE',
       }
       local vim_mode = vim.fn.mode()
-      vim.api.nvim_command('hi GalaxyViMode guibg='.. mode_color())
-      vim.api.nvim_command('hi GalaxyViModeSP guifg='.. mode_color()..' guibg='..colors.line_bg)
+      vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
+      vim.api.nvim_command('hi GalaxyViModeSP guifg=' .. mode_color() .. ' guibg=' .. colors.line_bg)
       return '  ' .. aliases[vim_mode:byte()] .. ' '
     end,
     separator = ' ',
-    separator_highlight = "GalaxyViModeSP",
-    highlight = {colors.bg,colors.line_bg,'bold'},
+    separator_highlight = 'GalaxyViModeSP',
+    highlight = { colors.bg, colors.line_bg, 'bold' },
   },
 }
 
-gls.left[3] ={
+gls.left[3] = {
   FileIcon = {
     provider = 'FileIcon',
     condition = buffer_not_empty,
-    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.line_bg},
+    highlight = { require('galaxyline.provider_fileinfo').get_file_icon_color, colors.line_bg },
   },
 }
 
-gls.left[4] ={
+gls.left[4] = {
   FileName = {
     provider = 'FileName',
     condition = buffer_not_empty,
-    highlight = {colors.darkgray, colors.line_bg},
+    highlight = { colors.darkgray, colors.line_bg },
     separator = ' ',
-    separator_highlight = {colors.darkgray, colors.line_bg},
+    separator_highlight = { colors.darkgray, colors.line_bg },
   },
 }
 
@@ -186,27 +185,29 @@ gls.left[5] = {
   FileSize = {
     provider = 'FileSize',
     condition = buffer_not_empty,
-    highlight = {colors.purple,colors.line_bg,'bold'},
-  }
+    highlight = { colors.purple, colors.line_bg, 'bold' },
+  },
 }
 
 gls.left[6] = {
   GitIcon = {
-    provider = function() return '  ' end,
+    provider = function()
+      return '  '
+    end,
     condition = require('galaxyline.condition').check_git_workspace,
-    highlight = {colors.darkgray,colors.line_bg},
-  }
+    highlight = { colors.darkgray, colors.line_bg },
+  },
 }
 gls.left[7] = {
   GitBranch = {
     provider = 'GitBranch',
     condition = require('galaxyline.condition').check_git_workspace,
-    highlight = {colors.orange,colors.line_bg,'bold'},
-  }
+    highlight = { colors.orange, colors.line_bg, 'bold' },
+  },
 }
 
 local checkwidth = function()
-  local squeeze_width  = vim.fn.winwidth(0) / 2
+  local squeeze_width = vim.fn.winwidth(0) / 2
   if squeeze_width > 40 then
     return true
   end
@@ -218,63 +219,66 @@ gls.left[8] = {
     provider = 'DiffAdd',
     condition = checkwidth,
     icon = '| ',
-    highlight = {colors.green,colors.line_bg},
-  }
+    highlight = { colors.green, colors.line_bg },
+  },
 }
 gls.left[9] = {
   DiffModified = {
     provider = 'DiffModified',
     condition = checkwidth,
     icon = '|柳',
-    highlight = {colors.orange,colors.line_bg},
-  }
+    highlight = { colors.orange, colors.line_bg },
+  },
 }
 gls.left[10] = {
   DiffRemove = {
     provider = 'DiffRemove',
     condition = checkwidth,
     icon = '| ',
-    highlight = {colors.red,colors.line_bg},
-  }
+    highlight = { colors.red, colors.line_bg },
+  },
 }
 gls.left[11] = {
   LeftEnd = {
-    provider = function() return '|' end,
+    provider = function()
+      return '|'
+    end,
     separator = '',
-    separator_highlight = {colors.line_bg,colors.bg},
-    highlight = {colors.line_bg,colors.line_bg}
-  }
+    separator_highlight = { colors.line_bg, colors.bg },
+    highlight = { colors.line_bg, colors.line_bg },
+  },
 }
 
 gls.left[12] = {
-    TrailingWhiteSpace = {
-     provider = TrailingWhiteSpace,
-     icon = '  ',
-     highlight = {colors.yellow,colors.bg},
-    }
+  TrailingWhiteSpace = {
+    provider = TrailingWhiteSpace,
+    icon = '  ',
+    highlight = { colors.yellow, colors.bg },
+  },
 }
 
 gls.left[13] = {
   DiagnosticError = {
     provider = 'DiagnosticError',
     icon = '  ',
-    highlight = {colors.red,colors.bg}
-  }
+    highlight = { colors.red, colors.bg },
+  },
 }
 gls.left[14] = {
   Space = {
-   provider = function () return ' ' end,
-   highlight = {colors.line_bg, colors.bg}
-  }
+    provider = function()
+      return ' '
+    end,
+    highlight = { colors.line_bg, colors.bg },
+  },
 }
 gls.left[15] = {
   DiagnosticWarn = {
     provider = 'DiagnosticWarn',
     icon = '  ',
-    highlight = {colors.yellow,colors.bg},
-  }
+    highlight = { colors.yellow, colors.bg },
+  },
 }
-
 
 gls.right[1] = {
   ShowLspClient = {
@@ -285,7 +289,7 @@ gls.right[1] = {
       end
       return true
     end,
-    highlight = {colors.green,colors.bg},
+    highlight = { colors.green, colors.bg },
     icon = '🗱  ',
     provider = 'GetLspClient',
   },
@@ -300,91 +304,97 @@ gls.right[1] = {
 --}
 
 gls.right[2] = {
-    WhiteSpaceEdge = {
-        provider = function() return ' ' end,
-        highlight = {colors.line_bg,colors.green},
-        separator = ' ',
-        separator_highlight = {colors.green, colors.bg}
-    },
-}
-
-gls.right[3]= {
-  FileEncode = {
-    provider = 'FileEncode',
-    highlight = {colors.bg,colors.green,'bold'},
+  WhiteSpaceEdge = {
+    provider = function()
+      return ' '
+    end,
+    highlight = { colors.line_bg, colors.green },
+    separator = ' ',
+    separator_highlight = { colors.green, colors.bg },
   },
 }
 
-gls.right[4]= {
+gls.right[3] = {
+  FileEncode = {
+    provider = 'FileEncode',
+    highlight = { colors.bg, colors.green, 'bold' },
+  },
+}
+
+gls.right[4] = {
   FileFormat = {
-    provider = {'FileFormat', function () return ' ' end},
-    highlight = {colors.bg,colors.green,'bold'},
+    provider = {
+      'FileFormat',
+      function()
+        return ' '
+      end,
+    },
+    highlight = { colors.bg, colors.green, 'bold' },
     separator = ' | ',
-    separator_highlight = {colors.bg,colors.green},
+    separator_highlight = { colors.bg, colors.green },
   },
 }
 
 gls.right[5] = {
   LineInfo = {
     provider = 'LineColumn',
-    highlight = {colors.darkgray,colors.darknavy,'bold'},
+    highlight = { colors.darkgray, colors.darknavy, 'bold' },
     separator = ' ',
-    separator_highlight = {colors.green,colors.darknavy},
+    separator_highlight = { colors.green, colors.darknavy },
   },
 }
 
 gls.right[6] = {
   PerCent = {
     provider = 'LinePercent',
-    highlight = {colors.darkgray,colors.darknavy,'bold'},
-  }
+    highlight = { colors.darkgray, colors.darknavy, 'bold' },
+  },
 }
 
 gls.short_line_left[1] = {
   WhiteSpace = {
-    provider = function ()
-        return ' '
+    provider = function()
+      return ' '
     end,
-    highlight = {colors.line_bg,colors.green}
-  }
+    highlight = { colors.line_bg, colors.green },
+  },
 }
 
 gls.short_line_left[2] = {
   BufferType = {
-    provider = function ()
-        return ' '..buffer.get_buffer_filetype()..' '
+    provider = function()
+      return ' ' .. buffer.get_buffer_filetype() .. ' '
     end,
     separator = '',
     condition = has_file_type,
-    separator_highlight = {colors.green,colors.darknavy},
-    highlight = {colors.line_bg,colors.green}
-  }
+    separator_highlight = { colors.green, colors.darknavy },
+    highlight = { colors.line_bg, colors.green },
+  },
 }
 
 local quickRun = require('internal.quickrun')
 
 gls.short_line_left[3] = {
   RunnerInfo = {
-    provider = function ()
-      local status  = quickRun.get_current_job_status()
-      return ' '.. (status.running and 'Running' or 'Done') ..'  JobID:' .. status.jobId .. ' '
+    provider = function()
+      local status = quickRun.get_current_job_status()
+      return ' ' .. (status.running and 'Running' or 'Done') .. '  JobID:' .. status.jobId .. ' '
     end,
     separator = '',
-    condition = function ()
-        return buffer.get_buffer_filetype() == "RUNNER"
+    condition = function()
+      return buffer.get_buffer_filetype() == 'RUNNER'
     end,
-    separator_highlight = {colors.darknavy,colors.bg},
-    highlight = {colors.purple,colors.darknavy}
-  }
+    separator_highlight = { colors.darknavy, colors.bg },
+    highlight = { colors.purple, colors.darknavy },
+  },
 }
 
 gls.short_line_right[1] = {
   BufferIcon = {
-    provider= 'BufferIcon',
+    provider = 'BufferIcon',
     separator = '',
     condition = has_file_type,
-    separator_highlight = {colors.line_bg,colors.darknavy},
-    highlight = {colors.darkgray,colors.line_bg}
-  }
+    separator_highlight = { colors.line_bg, colors.darknavy },
+    highlight = { colors.darkgray, colors.line_bg },
+  },
 }
-
