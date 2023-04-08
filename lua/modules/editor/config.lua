@@ -1,5 +1,13 @@
 local config = {}
 
+function config.nvim_tree()
+  require('nvim-tree').setup({
+    disable_netrw = false,
+    hijack_cursor = true,
+    hijack_netrw = true,
+  })
+end
+
 function config.telescope()
   local fb_actions = require('telescope').extensions.file_browser.actions
   require('telescope').setup({

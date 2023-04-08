@@ -6,6 +6,13 @@ local package = require('core.pack').package
 local conf = require('modules.editor.config')
 
 package({
+    'kyazdani42/nvim-tree.lua',
+    cmd = 'NvimTreeToggle',
+    config = conf.nvim_tree,
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  })
+
+package({
   'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,

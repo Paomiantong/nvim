@@ -1,4 +1,6 @@
 local api = vim.api
+local create_user_command = api.nvim_create_user_command --- @type function
+
 local quickRun = {}
 local conf = require('internal.quickrunConfig')
 local win, buf = -1, -1
@@ -6,15 +8,15 @@ local status = {
   running = false,
   jobId = -1,
 }
-local currentTask
+local currentTaskStatus
 
 local mappings = {
-  q = 'close_win()', -- stop and close the runner
-  i = 'insert_text()', -- input text
-  ['<C-c>'] = 'stop()', -- stop current job
+  q = 'close_win', -- stop and close the runner
+  i = 'insert_text', -- input text
+  ['<C-c>'] = 'stop', -- stop current job
 }
 
-local function reset_status()
+local function reset_status() --- @type function
   status = {
     running = false,
     jobId = -1,
@@ -44,7 +46,7 @@ local function exit(id, code)
   status.endTime = vim.fn.reltime(status.startTime)
   status.exitedCode = code
   status.running = false
-  currentTask.amountLines = currentTask.amountLines - 2 -- erase the blank lines
+  currentTaskStatus.amountLines = currentTaskStatus.amountLines - 2 -- erase the blank lines
   -- notify the user that the job is done
   quickRun.update_view({
     '[Job'
@@ -57,18 +59,18 @@ local function exit(id, code)
     '',
   })
   -- start the next job
-  local exceptCode = currentTask.jobs[currentTask.status].exceptCode
+  local exceptCode = currentTaskStatus.jobs[currentTaskStatus.phase].exceptCode
   if exceptCode == nil or exceptCode == code then
-    currentTask.status = currentTask.status + 1
-    quickRun.start(currentTask.jobs[currentTask.status])
+    currentTaskStatus.phase = currentTaskStatus.phase + 1
+    quickRun.start(currentTaskStatus.jobs[currentTaskStatus.phase])
   end
 end
 
 function quickRun.update_view(data)
   api.nvim_buf_set_option(buf, 'modifiable', true)
-  api.nvim_buf_set_lines(buf, currentTask.amountLines, -1, false, data)
-  currentTask.amountLines = currentTask.amountLines + #data
-  api.nvim_win_set_cursor(win, { currentTask.amountLines, 1 })
+  api.nvim_buf_set_lines(buf, currentTaskStatus.amountLines, -1, false, data)
+  currentTaskStatus.amountLines = currentTaskStatus.amountLines + #data
+  api.nvim_win_set_cursor(win, { currentTaskStatus.amountLines, 1 })
   api.nvim_buf_set_option(buf, 'modifiable', false)
 end
 
@@ -125,7 +127,9 @@ function quickRun.create_win()
   end
   -- register hotkey
   for key, value in pairs(mappings) do
-    vim.keymap.set('n', key, '<cmd>lua require"internal.quickrun".' .. value .. '<cr>', {
+    vim.keymap.set('n', key, function()
+      quickRun[value]()
+    end, {
       nowait = true,
       noremap = true,
       silent = true,
@@ -175,21 +179,24 @@ end
 
 function quickRun.startTask(task)
   quickRun.create_win()
-  currentTask = {
+  currentTaskStatus = {
     jobs = task,
     amountLines = 0,
-    status = 1,
+    phase = 1,
   }
-  quickRun.start(currentTask.jobs[currentTask.status])
+  quickRun.start(currentTaskStatus.jobs[currentTaskStatus.phase])
 end
 
 function quickRun.test()
   local task = {
     { cmd = { 'gcc', 'test.c', '-o', 'test' }, exceptCode = 0 },
-    { cmd = { './test' } },
-    { cmd = { 'rm', 'test', '-rf' } },
+    { cmd = { './test.exe' } },
   }
   quickRun.startTask(task)
 end
+
+create_user_command('QTest', function(tbl)
+  quickRun.test()
+end, {})
 
 return quickRun

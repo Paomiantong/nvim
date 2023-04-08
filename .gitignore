@@ -5,3 +5,5 @@ neovide_r**.log
 .vscode
 dashboard
 telescope.log
+**/test.exe
+**/test

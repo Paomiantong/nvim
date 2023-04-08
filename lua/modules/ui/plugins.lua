@@ -40,13 +40,6 @@ package({
 })
 
 package({
-  'kyazdani42/nvim-tree.lua',
-  cmd = 'NvimTreeToggle',
-  config = conf.nvim_tree,
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
-})
-
-package({
   'akinsho/bufferline.nvim',
   config = conf.nvim_bufferline,
   dependencies = { 'nvim-tree/nvim-web-devicons' },

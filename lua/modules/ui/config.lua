@@ -21,14 +21,6 @@ function config.nvim_bufferline()
   require('modules.ui.bufferline')
 end
 
-function config.nvim_tree()
-  require('nvim-tree').setup({
-    disable_netrw = false,
-    hijack_cursor = true,
-    hijack_netrw = true,
-  })
-end
-
 function config.gitsigns()
   require('gitsigns').setup({
     signs = {

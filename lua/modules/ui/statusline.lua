@@ -372,22 +372,22 @@ gls.short_line_left[2] = {
   },
 }
 
-local quickRun = require('internal.quickrun')
+-- local quickRun = require('internal.quickrun')
 
-gls.short_line_left[3] = {
-  RunnerInfo = {
-    provider = function()
-      local status = quickRun.get_current_job_status()
-      return ' ' .. (status.running and 'Running' or 'Done') .. '  JobID:' .. status.jobId .. ' '
-    end,
-    separator = '',
-    condition = function()
-      return buffer.get_buffer_filetype() == 'RUNNER'
-    end,
-    separator_highlight = { colors.darknavy, colors.bg },
-    highlight = { colors.purple, colors.darknavy },
-  },
-}
+-- gls.short_line_left[3] = {
+--   RunnerInfo = {
+--     provider = function()
+--       local status = quickRun.get_current_job_status()
+--       return ' ' .. (status.running and 'Running' or 'Done') .. '  JobID:' .. status.jobId .. ' '
+--     end,
+--     separator = '',
+--     condition = function()
+--       return buffer.get_buffer_filetype() == 'RUNNER'
+--     end,
+--     separator_highlight = { colors.darknavy, colors.bg },
+--     highlight = { colors.purple, colors.darknavy },
+--   },
+-- }
 
 gls.short_line_right[1] = {
   BufferIcon = {

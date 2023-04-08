@@ -4,13 +4,3 @@
 
 --local package = require('core.pack').register_package
 --local conf = require('modules.tools.config')
---
---package({
---  'nvim-telescope/telescope.nvim',
---  cmd = 'Telescope',
---  config = conf.telescope,
---  denpendencies = {
---    { 'nvim-lua/plenary.nvim', opt = true },
---    { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
---  },
---})
