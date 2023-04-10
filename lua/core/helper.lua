@@ -6,6 +6,7 @@ function helper.get_config_path()
   if not config then
     return home .. '/.config/nvim'
   end
+  config = string.gsub(config, '\\', '/')
   return config .. '/nvim'
 end
 
@@ -14,6 +15,7 @@ function helper.get_data_path()
   if not data then
     return home .. '/.local/share/nvim'
   end
+  data = string.gsub(data, '\\', '/')
   return data .. '/nvim-data'
 end
 
@@ -22,6 +24,7 @@ function helper.get_cache_path()
   if not cache then
     return home .. '/.cache/nvim/'
   end
+  cache = string.gsub(cache, '\\', '/')
   return cache .. '/nvim-cache/'
 end
 

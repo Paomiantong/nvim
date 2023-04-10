@@ -2,7 +2,7 @@ local api = vim.api
 local create_user_command = api.nvim_create_user_command --- @type function
 
 local quickRun = {}
-local conf = require('internal.quickrunConfig')
+-- local conf = require('internal.quickrunConfig')
 local win, buf = -1, -1
 local status = {
   running = false,
@@ -24,8 +24,6 @@ local function reset_status() --- @type function
     endTime = 0,
   }
 end
-
-local function foo() end
 
 local function input(id, data)
   vim.fn.chansend(id, data)
@@ -152,18 +150,27 @@ function quickRun.start(job)
   -- reset job status
   reset_status()
   -- set the job options
+  local jobCmd = job[1] ~= nil and job[1] or job.cmd
   local jobOptions = { on_stdout = output, on_stderr = output, on_exit = exit }
+  local cmdString = type(jobCmd) == 'table' and table.concat(jobCmd, ' ') or jobCmd
   -- add environment option if it has one
   if job.env ~= nil then
     jobOptions.env = job.env
   end
   -- start the job and change status
-  status.jobId = vim.fn.jobstart(job.cmd, jobOptions)
+  local ok, result = pcall(vim.fn.jobstart, jobCmd, jobOptions)
+  if not ok then
+    vim.notify(result, vim.log.levels.ERROR, { title = 'quickRun' })
+    return
+  end
+  status.jobId = result
   -- notify the user that the job is running
-  quickRun.update_view({ '[Job' .. status.jobId .. ' Running] ' .. table.concat(job.cmd, ' ') })
+  quickRun.update_view({ '[Job' .. status.jobId .. ' Running] ' .. cmdString })
   if status.jobId > 0 then
     status.startTime = vim.fn.reltime()
     status.running = true
+  else
+    vim.notify('run' .. cmdString .. 'failed', vim.log.levels.WARN, { title = 'quickRun' })
   end
 end
 
@@ -187,16 +194,18 @@ function quickRun.startTask(task)
   quickRun.start(currentTaskStatus.jobs[currentTaskStatus.phase])
 end
 
-function quickRun.test()
-  local task = {
-    { cmd = { 'gcc', 'test.c', '-o', 'test' }, exceptCode = 0 },
-    { cmd = { './test.exe' } },
-  }
-  quickRun.startTask(task)
+local ok, _ = pcall(vim.api.nvim_del_user_command, 'QTest')
+if not ok then
+  vim.notify('reload failed', vim.log.levels.ERROR, { title = 'quickRun' })
 end
 
 create_user_command('QTest', function(tbl)
-  quickRun.test()
+  local task = {
+    { { 'gcc', 'test.c', '-o', 'test' }, exceptCode = 0 },
+    { { './test.exe' } },
+    { 'dir' },
+  }
+  quickRun.startTask(task)
 end, {})
 
 return quickRun
