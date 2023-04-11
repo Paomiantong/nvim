@@ -9,7 +9,7 @@ local bufOptions = {
   buftype = 'nofile',
   swapfile = false,
   filetype = 'runner',
-  bufhidden = 'wipe',
+  bufhidden = 'hide',
   buflisted = false,
   modifiable = false,
 }
@@ -24,17 +24,24 @@ function Buffer.new()
     api.nvim_buf_set_option(bufnr, option, value)
   end
 
-  local o = {
+  return setmetatable({
     bufnr = bufnr,
     amountLines = 0,
-  }
-  setmetatable(o, Buffer)
-  return o
+  }, { __index = Buffer })
 end
 
-function Buffer:render(data)
+---render output
+---@param data table
+---@param highlight? string
+function Buffer:render(data, highlight)
   api.nvim_buf_set_option(self.bufnr, 'modifiable', true)
   api.nvim_buf_set_lines(self.bufnr, self.amountLines, -1, false, data)
+  if highlight then
+    for index, _ in ipairs(data) do
+      api.nvim_buf_add_highlight(self.bufnr, 0, highlight, self.amountLines + index - 1, 0, -1)
+    end
+  end
+
   self.amountLines = self.amountLines + #data
   api.nvim_buf_set_option(self.bufnr, 'modifiable', false)
 end

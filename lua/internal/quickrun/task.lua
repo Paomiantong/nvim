@@ -8,24 +8,35 @@ local Task = {}
 
 ---@return quickRun.Task
 function Task.new(jobs)
-  local o = setmetatable({
+  return setmetatable({
     jobs = jobs,
     phase = 1,
-    runner = Runner.new(),
   }, { __index = Task })
-  return o
 end
 
-function Task:nextPhase(code)
+---@param runner quickRun.Runner
+function Task:set_runner(runner)
+  if runner == nil then
+    return
+  end
+
+  self.runner = runner
+end
+
+function Task:next_phase(code)
   local exceptCode = self.jobs[self.phase].exceptCode
   if exceptCode == nil or exceptCode == code then
     self.phase = self.phase + 1
-    self.runner.run(self.jobs[self.phase], self.nextPhase)
+    self.runner:run(self)
   end
 end
 
+function Task:get_current_job()
+  return self.jobs[self.phase]
+end
+
 function Task:start()
-  self.runner.run(self.jobs[self.phase], self.nextPhase)
+  self.runner:run(self)
 end
 
 return Task
