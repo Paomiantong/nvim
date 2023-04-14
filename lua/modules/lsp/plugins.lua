@@ -51,7 +51,7 @@ package({
   'mhartington/formatter.nvim',
   config = conf.formatter,
   cmd = 'Format',
-  ft = fts
+  ft = fts,
 })
 
 package({

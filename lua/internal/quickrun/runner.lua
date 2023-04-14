@@ -1,7 +1,6 @@
-local api = vim.api
-
-local Buffer = require('buffer')
-local log = require('log')
+local log = require('internal.quickrun.log')
+local Buffer = require('internal.quickrun.buffer')
+local Window = require('internal.quickrun.window')
 
 local mappings = {
   --   q = 'close_win', -- stop and close the runner
@@ -12,6 +11,7 @@ local mappings = {
   o = 'insert_text', -- input text
   O = 'insert_text', -- input text
   ['<C-c>'] = 'stop', -- stop current job
+  r = 'restart', -- restart the task
 }
 
 ---@class quickRun.Runner
@@ -20,32 +20,34 @@ local mappings = {
 ---@field running boolean
 ---@field startTime number
 ---@field endTime  number
+---@field current_task quickRun.Task
 local Runner = {}
 
----@param b? quickRun.Buffer
----@return quickRun.Runner
+---new a `runner`
+---@param b? quickRun.Buffer the `buffer` which the runner output data
+---@return quickRun.Runner runner a new `runner`
 function Runner.new(b)
   b = b or Buffer.new()
 
   local o = setmetatable({
-    buffer = b,
     running = false,
     jobId = -1,
     startTime = 0,
     endTime = 0,
   }, { __index = Runner })
 
-  o:bind_buffer(b)
+  o:_bind_buffer(b)
   return o
 end
 
 ---run
----@param task quickRun.Task
+---@param task quickRun.Task the `task` to be excuted
 function Runner:run(task)
   if task == nil then
     return
   end
   local job = task:get_current_job()
+  self.current_task = task
   if job == nil then
     return
   end
@@ -113,12 +115,33 @@ function Runner:run(task)
   end
 end
 
+---stop the `runner`
 function Runner:stop()
   if self.running == true then
     vim.fn.jobstop(self.jobId)
+    self.running = false
   end
 end
 
+---reset the `runner`
+function Runner:reset()
+  self:stop()
+  local previous_buffer = self.buffer
+  self:_bind_buffer(Buffer.new())
+  if previous_buffer.attached then
+    Window.attachBuffer(self.buffer)
+  end
+  previous_buffer:delete()
+end
+
+---restart the `runner`
+function Runner:restart()
+  self:reset()
+  self.current_task:reset()
+  self.current_task:start()
+end
+
+---input to the `job`
 function Runner:insert_text()
   if self.running == false then
     return
@@ -133,8 +156,11 @@ function Runner:insert_text()
   vim.fn.inputrestore()
 end
 
----@param b quickRun.Buffer
-function Runner:bind_buffer(b)
+---@private
+---bind `buffer`
+---@param b quickRun.Buffer the `buffer` which the runner output data
+function Runner:_bind_buffer(b)
+  self.buffer = b
   for key, value in pairs(mappings) do
     vim.keymap.set('n', key, function()
       self[value](self)
@@ -145,5 +171,17 @@ function Runner:bind_buffer(b)
       buffer = b.bufnr,
     })
   end
+  vim.keymap.set('n', 'q', '<CMD>QRWindowToggle<CR>', {
+    nowait = true,
+    noremap = true,
+    silent = true,
+    buffer = b.bufnr,
+  })
+  --   vim.keymap.set('n', 'p', '"+p', {
+  --     nowait = true,
+  --     noremap = true,
+  --     silent = true,
+  --     buffer = b.bufnr,
+  --   })
 end
 return Runner

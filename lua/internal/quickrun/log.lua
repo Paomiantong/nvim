@@ -1,6 +1,6 @@
 local M = {}
 
-local config = require('config')
+local config = require('internal.quickrun.config')
 
 M.notify_opts = { title = 'QuickRun' }
 
