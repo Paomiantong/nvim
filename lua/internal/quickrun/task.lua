@@ -4,53 +4,38 @@ Runner = require('internal.quickrun.runner')
 ---@field name string
 ---@field jobs table
 ---@field phase number
----@field runner quickRun.Runner
 local Task = {}
 
 ---new a `task`
 ---@param jobs table the `jobs` which a task consisted of
+---@param name? string name of the task
 ---@return quickRun.Task task a new `task`
-function Task.new(jobs)
+function Task.new(jobs, name)
   return setmetatable({
+    name = name or 'Task',
     jobs = jobs,
     phase = 1,
   }, { __index = Task })
 end
 
----set `runner`
----@param runner quickRun.Runner
-function Task:set_runner(runner)
-  if runner == nil then
-    return
-  end
-
-  self.runner = runner
-end
-
 ---next phase
 ---@param code number the exit code of previous `job`
 function Task:next_phase(code)
+  if self.phase >= #self.jobs then
+    return false
+  end
   local exceptCode = self.jobs[self.phase].exceptCode
   if exceptCode == nil or exceptCode == code then
     self.phase = self.phase + 1
-    self.runner:run(self)
+    return true
   end
+  return false
 end
 
 ---get current `job`
 ---@return table
 function Task:get_current_job()
   return self.jobs[self.phase]
-end
-
----start the `task`
-function Task:start()
-  self.runner:run(self)
-end
-
----stop the `task`
-function Task:stop()
-  self.runner:stop()
 end
 
 ---reset the `task`

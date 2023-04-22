@@ -14,6 +14,12 @@ local mappings = {
   r = 'restart', -- restart the task
 }
 
+---* @example
+---<pre>
+---local task = task_generator.generate_run_singlefile_task()
+---local runner = runner_manager.get_runner()
+---runner:start(task)
+---</pre>
 ---@class quickRun.Runner
 ---@field buffer quickRun.Buffer
 ---@field jobId number
@@ -41,13 +47,8 @@ function Runner.new(b)
 end
 
 ---run
----@param task quickRun.Task the `task` to be excuted
-function Runner:run(task)
-  if task == nil then
-    return
-  end
-  local job = task:get_current_job()
-  self.current_task = task
+function Runner:run()
+  local job = self.current_task:get_current_job()
   if job == nil then
     return
   end
@@ -69,7 +70,9 @@ function Runner:run(task)
       '',
     }, code == 0 and 'Function' or 'Error')
     -- start the next job
-    task:next_phase(code)
+    if self.current_task:next_phase(code) then
+      self:run()
+    end
   end
 
   -- set the job options
@@ -115,6 +118,17 @@ function Runner:run(task)
   end
 end
 
+---start the `runner`
+---@param task quickRun.Task the `task` to be excuted
+function Runner:start(task)
+  if task == nil then
+    return
+  end
+  self.current_task = task
+  self.buffer:set_variable('task_name', self.current_task.name)
+  self:run()
+end
+
 ---stop the `runner`
 function Runner:stop()
   if self.running == true then
@@ -128,6 +142,7 @@ function Runner:reset()
   self:stop()
   local previous_buffer = self.buffer
   self:_bind_buffer(Buffer.new())
+  self.buffer:set_variable('task_name', self.current_task.name)
   if previous_buffer.attached then
     Window.attachBuffer(self.buffer)
   end
@@ -138,7 +153,7 @@ end
 function Runner:restart()
   self:reset()
   self.current_task:reset()
-  self.current_task:start()
+  self:run()
 end
 
 ---input to the `job`
@@ -151,7 +166,7 @@ function Runner:insert_text()
   local data = vim.fn.input('input >')
   self.buffer:render({ data }, 'String')
   if #data > 0 then
-    vim.fn.chansend(self.jobId, data .. '\n')
+    vim.fn.chansend(self.jobId, data .. '\n\n')
   end
   vim.fn.inputrestore()
 end

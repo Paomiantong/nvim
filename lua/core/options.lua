@@ -34,7 +34,7 @@ if vim.fn.executable('rg') == 1 then
 end
 
 opt.completeopt = 'menu,menuone,noselect'
-opt.showmode = false
+opt.showmode = true
 opt.shortmess = 'aoOTIcF'
 opt.scrolloff = 5
 opt.sidescrolloff = 5
@@ -42,7 +42,7 @@ opt.ruler = false
 opt.showtabline = 0
 opt.winwidth = 30
 opt.pumheight = 15
-opt.showcmd = false
+opt.showcmd = true
 opt.cmdheight = 0
 opt.laststatus = 3
 opt.list = true

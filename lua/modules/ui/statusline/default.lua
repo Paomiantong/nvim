@@ -16,8 +16,8 @@ gl.short_line_list = {
 }
 
 local colors = {
-  bg = '#282c34',
-  line_bg = '#353644',
+  bg = '#1a1b26',
+  line_bg = '#414868',
   fg = '#8FBCBB',
   fg_green = '#65a380',
 
@@ -28,7 +28,7 @@ local colors = {
 
   yellow = '#fabd2f',
   cyan = '#008080',
-  darkblue = '#081633',
+  darkblue = '#658edc',
   green = '#98C379',
   orange = '#FF8800',
   --purple = '#5d4d7a',
@@ -37,45 +37,6 @@ local colors = {
   blue = '#51afef',
   red = '#ec5f67',
 }
-
---local function lsp_status(status)
---    local shorter_stat = ''
---    for match in string.gmatch(status, "[^%s]+")  do
---        local err_warn = string.find(match, "^[WE]%d+", 0)
---        if not err_warn then
---            shorter_stat = shorter_stat .. ' ' .. match
---        end
---    end
---    return shorter_stat
---end
-
---local function get_coc_lsp()
---  local status = vim.fn['coc#status']()
---  if not status or status == '' then
---      return ''
---  end
---  return lsp_status(status)
---end
---
---local function get_diagnostic_info()
---  if vim.fn.exists('*coc#rpc#start_server') == 1 then
---    return get_coc_lsp()
---    end
---  return ''
---end
---
---local function get_current_func()
---  local has_func, func_name = pcall(vim.fn.nvim_buf_get_var,0,'coc_current_function')
---  if not has_func then return end
---      return func_name
---  end
---
---local function get_function_info()
---  if vim.fn.exists('*coc#rpc#start_server') == 1 then
---    return get_current_func()
---    end
---  return ''
---end
 
 local function trailing_whitespace()
   local trail = vim.fn.search('\\s$', 'nw')
@@ -155,7 +116,7 @@ gls.left[2] = {
       local vim_mode = vim.fn.mode()
       vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
       vim.api.nvim_command('hi GalaxyViModeSP guifg=' .. mode_color() .. ' guibg=' .. colors.line_bg)
-      return '  ' .. aliases[vim_mode:byte()] .. ' '
+      return '  ' .. aliases[vim_mode:byte()] .. ' '
     end,
     separator = ' ',
     separator_highlight = 'GalaxyViModeSP',
@@ -185,6 +146,7 @@ gls.left[5] = {
   FileSize = {
     provider = 'FileSize',
     condition = buffer_not_empty,
+    icon = ' ',
     highlight = { colors.purple, colors.line_bg, 'bold' },
   },
 }
@@ -289,35 +251,29 @@ gls.right[1] = {
       end
       return true
     end,
-    highlight = { colors.green, colors.bg },
-    icon = '🗱  ',
+    separator = ' ',
+    separator_highlight = { colors.line_bg, colors.bg },
+    highlight = { colors.darkblue, colors.line_bg },
+    icon = '   ',
     provider = 'GetLspClient',
   },
 }
-
---gls.left[17] = {
---  CocFunc = {
---    provider = CocFunc,
---    icon = '  λ ',
---    highlight = {colors.yellow,colors.bg},
---  }
---}
 
 gls.right[2] = {
   WhiteSpaceEdge = {
     provider = function()
       return ' '
     end,
-    highlight = { colors.line_bg, colors.green },
-    separator = ' ',
-    separator_highlight = { colors.green, colors.bg },
+    highlight = { colors.darkblue, colors.line_bg },
+    separator = ' ',
+    separator_highlight = { colors.darkblue, colors.line_bg },
   },
 }
 
 gls.right[3] = {
   FileEncode = {
     provider = 'FileEncode',
-    highlight = { colors.bg, colors.green, 'bold' },
+    highlight = { colors.darkblue, colors.line_bg },
   },
 }
 
@@ -329,25 +285,25 @@ gls.right[4] = {
         return ' '
       end,
     },
-    highlight = { colors.bg, colors.green, 'bold' },
+    highlight = { colors.darkblue, colors.line_bg },
     separator = ' | ',
-    separator_highlight = { colors.bg, colors.green },
+    separator_highlight = { colors.darkblue, colors.line_bg },
   },
 }
 
 gls.right[5] = {
   LineInfo = {
     provider = 'LineColumn',
-    highlight = { colors.darkgray, colors.darknavy, 'bold' },
-    separator = ' ',
-    separator_highlight = { colors.green, colors.darknavy },
+    highlight = { colors.bg, colors.darkblue },
+    separator = '',
+    separator_highlight = { colors.darkblue, colors.line_bg },
   },
 }
 
 gls.right[6] = {
   PerCent = {
     provider = 'LinePercent',
-    highlight = { colors.darkgray, colors.darknavy, 'bold' },
+    highlight = { colors.bg, colors.darkblue },
   },
 }
 
@@ -367,34 +323,37 @@ gls.short_line_left[2] = {
     end,
     separator = '',
     condition = has_file_type,
+    highlight = { colors.line_bg, colors.green, 'bold' },
     separator_highlight = { colors.green, colors.darknavy },
-    highlight = { colors.line_bg, colors.green },
   },
 }
 
 -- local quickRun = require('internal.quickrun')
 
--- gls.short_line_left[3] = {
---   RunnerInfo = {
---     provider = function()
---       local status = quickRun.get_current_job_status()
---       return ' ' .. (status.running and 'Running' or 'Done') .. '  JobID:' .. status.jobId .. ' '
---     end,
---     separator = '',
---     condition = function()
---       return buffer.get_buffer_filetype() == 'RUNNER'
---     end,
---     separator_highlight = { colors.darknavy, colors.bg },
---     highlight = { colors.purple, colors.darknavy },
---   },
--- }
+gls.short_line_left[3] = {
+  RunnerInfo = {
+    provider = function()
+      local bufnr = vim.api.nvim_win_get_buf(0)
+      return ' ' .. vim.api.nvim_buf_get_var(bufnr, 'task_name') .. ' '
+      --   return ' ' .. (status.running and 'Running' or 'Done') .. '  JobID:' .. status.jobId .. ' '
+    end,
+    separator = '',
+    condition = function()
+      return buffer.get_buffer_filetype() == 'RUNNER'
+    end,
+    highlight = { colors.purple, colors.darknavy },
+    separator_highlight = { colors.darknavy, colors.bg },
+  },
+}
 
 gls.short_line_right[1] = {
   BufferIcon = {
     provider = 'BufferIcon',
     separator = '',
-    condition = has_file_type,
-    separator_highlight = { colors.line_bg, colors.darknavy },
+    condition = function()
+      return has_file_type() and vim.bo.filetype ~= 'runner'
+    end,
     highlight = { colors.darkgray, colors.line_bg },
+    separator_highlight = { colors.line_bg, colors.darknavy },
   },
 }

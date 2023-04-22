@@ -10,6 +10,7 @@ local log = require('internal.quickrun.log')
 local Buffer = {}
 
 local bufOptions = {
+  --   buftype = 'prompt',
   buftype = 'nofile',
   swapfile = false,
   filetype = 'runner',
@@ -27,7 +28,7 @@ function Buffer.new()
   for option, value in pairs(bufOptions) do
     api.nvim_buf_set_option(bufnr, option, value)
   end
-
+  vim.fn.prompt_setprompt(bufnr, '#')
   return setmetatable({
     bufnr = bufnr,
     amountLines = 0,
@@ -41,6 +42,7 @@ end
 function Buffer:render(lines, highlight)
   -- set lines
   api.nvim_buf_set_option(self.bufnr, 'modifiable', true)
+  --   vim.fn.appendbufline(self.bufnr, self.amountLines, lines)
   api.nvim_buf_set_lines(self.bufnr, self.amountLines, -1, false, lines)
   api.nvim_buf_set_option(self.bufnr, 'modifiable', false)
   -- highlight
@@ -55,6 +57,18 @@ function Buffer:render(lines, highlight)
   if self.attached then
     api.nvim_win_set_cursor(self.attach_window, { self.amountLines, 1 })
   end
+  --   api.nvim_buf_set_option(self.bufnr, 'modified', false)
+end
+
+-- function Buffer:render()
+
+-- end
+
+---sets a buffer variable
+---@param name string
+---@param value any
+function Buffer:set_variable(name, value)
+  api.nvim_buf_set_var(self.bufnr, name, value)
 end
 
 ---whether the `buffer` is valid

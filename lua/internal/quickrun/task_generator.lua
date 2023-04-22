@@ -35,7 +35,7 @@ end
 ---generate a task which run the current file
 ---@return quickRun.Task|nil
 function M.generate_run_singlefile_task()
-  local filetype = expand('%:p:e')
+  local filetype = vim.bo.filetype
   local task_template = vim.deepcopy(config.single_file_task_template[filetype])
 
   if task_template == nil then

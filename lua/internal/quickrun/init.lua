@@ -19,11 +19,11 @@ api.nvim_create_user_command('QRunSingleFile', function()
   if task == nil then
     return
   end
+  task.name = vim.fn.expand('%:t')
   local runner = runner_manager.get_runner()
   Window.open()
   Window.attachBuffer(runner.buffer)
-  task:set_runner(runner)
-  task:start()
+  runner:start(task)
 end, {})
 vim.keymap.set('n', '<space>r', '<CMD>QRunSingleFile<CR>', {
   nowait = true,

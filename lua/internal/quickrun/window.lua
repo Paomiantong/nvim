@@ -8,6 +8,8 @@ local default_buffer = Buffer.new()
 M.buf = default_buffer
 default_buffer:render({ 'Hello World!' }, 'String')
 
+default_buffer:set_variable('task_name', 'Hi Quickrun')
+
 local instance = -1
 
 local function instance_is_valid()

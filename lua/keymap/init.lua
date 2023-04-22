@@ -14,9 +14,12 @@ map.n({
   ['<Leader>e'] = cmd('NvimTreeToggle'),
   -- telescope
   ['<Leader>tf'] = cmd('Telescope find_files'),
+})
+
+map.n({
   -- formatter
   ['<space>f'] = cmd('Format'),
-})
+}, { silent = true })
 
 -- Lspsaga
 -- floaterminal

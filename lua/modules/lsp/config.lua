@@ -17,6 +17,10 @@ function config.lspsaga()
       sign_priority = 40,
       virtual_text = true,
     },
+    symbol_in_winbar = {
+      enable = true,
+      separator = '  ',
+    },
   })
 end
 

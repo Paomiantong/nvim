@@ -5,11 +5,11 @@
 local config = {}
 
 function config.tokyonight()
-  vim.cmd('colorscheme tokyonight')
+  vim.cmd('colorscheme tokyonight-moon')
 end
 
 function config.galaxyline()
-  require('modules.ui.statusline')
+  require('modules.ui.statusline.tokyonight')
 end
 
 function config.dashboard()

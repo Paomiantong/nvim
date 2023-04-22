@@ -1,5 +1,5 @@
 -- Utilities for creating configurations
--- local util = require('formatter.util')
+local util = require('formatter.util')
 
 require('formatter').setup({
   -- Enable or disable logging
@@ -9,7 +9,25 @@ require('formatter').setup({
   -- All formatter configurations are opt-in
   filetype = {
     c = {
-      require('formatter.filetypes.c').clangformat,
+      function()
+        return {
+          exe = 'clang-format',
+          args = {
+            '-style',
+            'file',
+            '-fallback-style',
+            'llvm',
+            '--Wno-error',
+            'unknown',
+            '-assume-filename',
+            util.escape_path(util.get_current_buffer_file_name()),
+          },
+          stdin = true,
+          try_node_modules = true,
+          cwd = util.get_cwd(),
+        }
+      end,
+      --   require('formatter.filetypes.c').clangformat,
     },
     cpp = {
       require('formatter.filetypes.cpp').clangformat,

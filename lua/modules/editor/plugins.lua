@@ -43,3 +43,12 @@ package({
   end,
   priority = 1000,
 })
+
+package({
+  'folke/noice.nvim',
+  config = conf.noice,
+  dependencies = {
+    'MunifTanjim/nui.nvim',
+    'rcarriga/nvim-notify',
+  },
+})
