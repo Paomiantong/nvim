@@ -25,7 +25,7 @@ api.nvim_create_user_command('QRunSingleFile', function()
   Window.attachBuffer(runner.buffer)
   runner:start(task)
 end, {})
-vim.keymap.set('n', '<space>r', '<CMD>QRunSingleFile<CR>', {
+vim.keymap.set('n', '<space>qr', '<CMD>QRunSingleFile<CR>', {
   nowait = true,
   noremap = true,
   silent = true,

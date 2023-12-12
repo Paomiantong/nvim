@@ -5,10 +5,18 @@ function config.nvim_tree()
     disable_netrw = false,
     hijack_cursor = true,
     hijack_netrw = true,
+    actions = {
+      open_file = { quit_on_open = true },
+    },
+    diagnostics = {
+      enable = true,
+      show_on_dirs = true,
+    },
   })
 end
 
 function config.telescope()
+  local actions = require('telescope.actions')
   local fb_actions = require('telescope').extensions.file_browser.actions
   require('telescope').setup({
     defaults = {
@@ -22,6 +30,11 @@ function config.telescope()
       file_previewer = require('telescope.previewers').vim_buffer_cat.new,
       grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
       qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+      mappings = {
+        i = {
+          ['esc'] = actions.close,
+        },
+      },
     },
     extensions = {
       fzy_native = {

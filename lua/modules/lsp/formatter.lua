@@ -35,6 +35,12 @@ require('formatter').setup({
     lua = {
       require('formatter.filetypes.lua').stylua,
     },
+    python = {
+      require('formatter.filetypes.python').autopep8,
+    },
+    javascript = {
+      require('formatter.filetypes.javascript').prettier,
+    },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ['*'] = {

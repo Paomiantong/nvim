@@ -14,6 +14,7 @@ map.n({
   ['<Leader>e'] = cmd('NvimTreeToggle'),
   -- telescope
   ['<Leader>tf'] = cmd('Telescope find_files'),
+  ['<Leader>tg'] = cmd('Telescope live_grep'),
 })
 
 map.n({
@@ -35,6 +36,11 @@ map.n({
   ['<space>h'] = cmd('Lspsaga hover_doc'),
   -- Rename
   ['<space>r'] = cmd('Lspsaga rename ++project'),
+  -- Definition
+  ['<space>gd'] = cmd('Lspsaga goto_definition'),
+  ['<space>pd'] = cmd('Lspsaga peek_definition'),
+  -- Reference
+  ['<space>gr'] = cmd('Telescope lsp_references'),
   -- Diagnostic show,
   ['se'] = cmd('Lspsaga show_buf_diagnostics'),
   -- Diagnostic jump
