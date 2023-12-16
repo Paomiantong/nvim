@@ -4,7 +4,6 @@
 
 local package = require('core.pack').package
 local conf = require('modules.lsp.config')
-
 local fts = {
   'go',
   'lua',
@@ -20,6 +19,12 @@ local fts = {
   'css',
   'html',
 }
+
+if LCOALCONF and LCOALCONF.lsp_fts then
+    for _, v in pairs(LCOALCONF.lsp_fts) do
+        table.insert(fts,v)
+      end
+end
 
 package({
   'neovim/nvim-lspconfig',

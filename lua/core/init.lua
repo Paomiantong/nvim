@@ -3,6 +3,7 @@
 -- License: MIT
 
 local vim = vim
+local uv = vim.loop
 local helper = require('core.helper')
 -- local home = os.getenv('HOME')
 -- home = home == nil and os.getenv('XDG_CONFIG_HOME') or home
@@ -30,7 +31,27 @@ local createdir = function()
   end
 end
 
+local loadlocalcfg = function()
+  local path = helper.get_config_path() .. '/lua/local'
+  if vim.fn.isdirectory(path) == 0 then
+    uv.fs_mkdir(path, 493)
+    local fd = uv.fs_open(path .. '/init.lua', 'a', 438)
+    uv.fs_write(
+      fd,
+      [[
+local config = {}
+return config
+]],
+      -1
+    )
+    uv.fs_close(fd)
+  else
+    LCOALCONF = require('local')
+  end
+end
+
 createdir()
+loadlocalcfg()
 
 --disable_distribution_plugins
 vim.g.loaded_gzip = 1
