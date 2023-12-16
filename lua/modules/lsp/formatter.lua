@@ -41,6 +41,12 @@ require('formatter').setup({
     javascript = {
       require('formatter.filetypes.javascript').prettier,
     },
+    css = {
+      require('formatter.filetypes.css').prettier,
+    },
+    html = {
+      require('formatter.filetypes.html').prettier,
+    },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ['*'] = {

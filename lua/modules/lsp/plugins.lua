@@ -17,6 +17,8 @@ local fts = {
   'javascript',
   'json',
   'python',
+  'css',
+  'html',
 }
 
 package({
