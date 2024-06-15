@@ -43,7 +43,7 @@ package({
   'akinsho/bufferline.nvim',
   config = conf.nvim_bufferline,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  version = 'v3.*',
+  -- version = 'v3.*',
 })
 
 local enable_indent_filetype = {
