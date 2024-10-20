@@ -5,7 +5,13 @@ function config.nvim_lsp()
 end
 
 function config.mason()
-  require('mason').setup()
+  require('mason').setup(
+  {
+    github = {
+      download_url_template = "https://ghp.ci/https://github.com/%s/releases/download/%s/%s",
+    },
+  }
+  )
 end
 
 function config.lspsaga()

@@ -45,6 +45,7 @@ function M.generate_run_singlefile_task()
   for _, job in ipairs(task_template) do
     -- cmd
     if type(job[1]) == 'string' then
+    ---@diagnostic disable-next-line: assign-type-mismatch
       job[1] = template(job[1])
     else
       for i, str in ipairs(job[1]) do

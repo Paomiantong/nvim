@@ -75,7 +75,7 @@ vim.g.loaded_netrwFileHandlers = 1
 
 -- neovide compitable
 if vim.fn.exists('g:neovide') then
-  vim.o.guifont = 'JetBrains Mono,CaskaydiaCove NF:h11'
+  vim.o.guifont = 'JetBrains Mono:h11'
   vim.opt.linespace = 0
   vim.g.neovide_scroll_animation_length = 0.3
 end

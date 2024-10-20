@@ -7,7 +7,8 @@ local delete_cmd = utils.is_win() and 'del ${file_ne}.exe /f' or { 'rm', '${file
 
 M.single_file_task_template = {
   c = {
-    { { 'gcc', '${file}', '-o', '${file_ne}' }, exceptCode = 0 },
+    { { 'chcp', '65001' } },
+    { { 'cl', '${file}', '-o', '${file_ne}' }, exceptCode = 0 },
     { { '${file_ne}' }, { cwd = '${file_path}' } },
     { delete_cmd },
   },
