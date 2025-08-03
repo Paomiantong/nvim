@@ -1,79 +1,90 @@
 -- author: glepnr https://github.com/glepnir
 -- date: 2022-07-02
 -- License: MIT
-
 local package = require('core.pack').package
 local conf = require('modules.lsp.config')
-local fts = {
-  'go',
-  'lua',
-  'sh',
-  'rust',
-  'cpp',
-  'c',
-  'typescript',
-  'typescriptreact',
-  'javascript',
-  'json',
-  'python',
-  'css',
-  'html',
-}
-
-if LCOALCONF and LCOALCONF.lsp_fts then
-    for _, v in pairs(LCOALCONF.lsp_fts) do
-        table.insert(fts,v)
-      end
-end
 
 package({
-  'neovim/nvim-lspconfig',
-  -- used filetype to lazyload lsp
-  -- config your language filetype in here
-  ft = fts,
-  config = conf.nvim_lsp,
-  dependencies = {
-    { 'williamboman/mason.nvim', config = conf.mason },
-    {
-      'glepnir/lspsaga.nvim',
-      event = 'LspAttach',
-      cmd = 'Lspsaga term_toggle',
-      config = conf.lspsaga,
-      dependencies = {
-        { 'nvim-tree/nvim-web-devicons' },
-        --Please make sure you install markdown and markdown_inline parser
-        { 'nvim-treesitter/nvim-treesitter' },
-      },
-    },
-  },
-})
-
--- package({
---     'glepnir/easyformat.nvim',
---     ft = enable_indent_filetype,
---     config = conf.easyformat,
--- })
-
-package({
-  'mhartington/formatter.nvim',
-  config = conf.formatter,
-  cmd = 'Format',
-  ft = fts,
+    'williamboman/mason.nvim',
+    config = conf.mason
 })
 
 package({
-  'hrsh7th/nvim-cmp',
-  event = 'InsertEnter',
-  config = conf.nvim_cmp,
-  dependencies = {
-    { 'hrsh7th/cmp-nvim-lsp' },
-    { 'hrsh7th/cmp-path' },
-    { 'hrsh7th/cmp-buffer' },
-    { 'saadparwaiz1/cmp_luasnip' },
-    { 'rafamadriz/friendly-snippets' },
-  },
+    'nvimdev/lspsaga.nvim',
+    event = 'VeryLazy',
+    config = function()
+        require('lspsaga').setup {
+            ui = {
+                code_action = ''
+            },
+            lightbulb = {
+                enable = false,
+                virtual_text = false
+            }
+        }
+    end
 })
 
-package({ 'L3MON4D3/LuaSnip', event = 'InsertCharPre', config = conf.lua_snip })
+package({
+    'mhartington/formatter.nvim',
+    config = conf.formatter,
+    cmd = 'Format',
+    ft = fts
+})
 
-package({ 'windwp/nvim-autopairs', event = 'InsertEnter', config = conf.auto_pairs })
+package({
+    'saghen/blink.cmp',
+    event = {'BufReadPost', 'BufNewFile'},
+    version = '1.*',
+    opts = {
+        completion = {
+            documentation = {
+                auto_show = true
+            }
+        },
+        keymap = {
+            preset = 'default',
+            ['<C-u>'] = {'scroll_documentation_up', 'fallback'},
+            ['<C-d>'] = {'scroll_documentation_down', 'fallback'},
+            ['<Up>'] = {'select_prev', 'fallback'},
+            ['<Down>'] = {'select_next', 'fallback'},
+            ['<Enter>'] = {'accept', 'fallback'}
+        },
+        signature = {
+            enabled = true
+        },
+        cmdline = {
+            completion = {
+                menu = {
+                    auto_show = true
+                }
+            }
+        },
+        sources = {
+            default = {"lsp", "path", "snippets", "buffer"},
+            providers = {
+                snippets = {
+                    score_offset = 1000
+                }
+            }
+        }
+    }
+})
+
+package({
+    'numToStr/Comment.nvim',
+    event = 'VeryLazy'
+})
+
+package({
+    'L3MON4D3/LuaSnip',
+    event = 'InsertCharPre',
+    config = conf.lua_snip
+})
+
+package({{
+    'altermo/ultimate-autopair.nvim',
+    event = {'InsertEnter'},
+    branch = 'v0.6', -- recommended as each new version will have breaking changes
+    opts = conf.auto_pairs
+}})

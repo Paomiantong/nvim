@@ -32,7 +32,7 @@ function pack:boot_strap()
   local lazy_path = string.format('%s/lazy/lazy.nvim', helper.get_data_path())
   local state = uv.fs_stat(lazy_path)
   if not state then
-    local cmd = '!git clone https://ghp.ci/https://github.com/folke/lazy.nvim.git ' .. lazy_path
+    local cmd = '!git clone https://gh-proxy.com/https://github.com/folke/lazy.nvim.git ' .. lazy_path
     api.nvim_command(cmd)
   end
   vim.opt.runtimepath:prepend(lazy_path)
@@ -41,7 +41,7 @@ function pack:boot_strap()
     lockfile = helper.get_data_path() .. '/lazy-lock.json',
     dev = { path = '~/Workspace' },
     git = {
-        url_format = "https://ghp.ci/https://github.com/%s.git",
+        url_format = "https://gh-proxy.com/https://github.com/%s.git",
     },
   }
   self:load_modules_packages()

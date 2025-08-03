@@ -7,4 +7,4 @@ dashboard
 telescope.log
 **/test.exe
 **/test
-lua/local
+lua/modules/local

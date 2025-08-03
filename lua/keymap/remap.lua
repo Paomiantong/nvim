@@ -40,8 +40,6 @@ map.a({
   -- buffer jump
   [']b'] = cmd('bn'),
   ['[b'] = cmd('bp'),
-  -- remove trailing white space
-  ['<Leader>t'] = cmd('TrimTrailingWhitespace'),
 })
 
 -- window
