@@ -4,10 +4,10 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.winfixbuf = true
   end,
 })
-local workdir = os.getenv 'WORKDIR' or ''
-local overseer = require 'overseer'
+local workdir = os.getenv('WORKDIR') or ''
+local overseer = require('overseer')
 vim.api.nvim_create_user_command('OverseerRestartLast', function()
-  local tasks = overseer.list_tasks { recent_first = true }
+  local tasks = overseer.list_tasks({ recent_first = true })
   if vim.tbl_isempty(tasks) then
     vim.notify('No tasks found', vim.log.levels.WARN)
   else
@@ -18,25 +18,25 @@ vim.api.nvim_create_augroup('PreventQuitWithRunningTasks', { clear = true })
 vim.api.nvim_create_autocmd('QuitPre', {
   group = 'PreventQuitWithRunningTasks',
   callback = function()
-    local tasks = overseer.list_tasks { status = overseer.STATUS.RUNNING }
+    local tasks = overseer.list_tasks({ status = overseer.STATUS.RUNNING })
     local num_windows = vim.fn.winnr('$')
     if not vim.tbl_isempty(tasks) and num_windows == 1 then
-      print 'Cannot quit while tasks are running!'
+      print('Cannot quit while tasks are running!')
       return false -- Cancel the quit command
     end
   end,
 })
 
 vim.keymap.set('n', '<Leader>rr', '<cmd>OverseerRun<cr>', { desc = 'Overseer run templates' })
-vim.keymap.set('n', '<Leader>rt', function ()
-  vim.cmd 'OverseerToggle'
- -- custom_utils.func_on_window('dapui_stacks', function ()
- --           require 'dapui'.open({ reset = true })
- --
- -- end) 
+vim.keymap.set('n', '<Leader>rt', function()
+  vim.cmd('OverseerToggle')
+  -- custom_utils.func_on_window('dapui_stacks', function ()
+  --           require 'dapui'.open({ reset = true })
+  --
+  -- end)
 end, { desc = 'Overseer toggle task list' })
 vim.keymap.set('n', '<Leader>ra', '<cmd>OverseerQuickAction<cr>', { desc = 'Overseer quick action list' })
-overseer.setup {
+overseer.setup({
   dap = false,
   strategy = 'terminal',
   templates = {
@@ -47,11 +47,11 @@ overseer.setup {
   },
   template_timeout = 5000,
   component_aliases = {
-      default_vscode = {
-        "default",
-        "on_result_diagnostics",
-        "unique"
-      },
+    default_vscode = {
+      'default',
+      'on_result_diagnostics',
+      'unique',
+    },
   },
   task_list = {
     direction = 'right',
@@ -84,7 +84,7 @@ overseer.setup {
       ['q'] = 'Close',
     },
   },
-}
+})
 overseer.add_template_hook({
   module = '^make$',
 }, function(task_defn, util)
@@ -100,6 +100,5 @@ end)
 overseer.add_template_hook({
   module = '^remake Fit$',
 }, function(task_defn, util)
-  util.add_component(task_defn,  'unique' )
+  util.add_component(task_defn, 'unique')
 end)
-

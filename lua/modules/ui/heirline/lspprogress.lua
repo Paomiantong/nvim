@@ -1,4 +1,4 @@
-require('lsp-progress').setup {
+require('lsp-progress').setup({
   client_format = function(client_name, spinner, series_messages)
     if #series_messages == 0 then
       return nil
@@ -43,4 +43,4 @@ require('lsp-progress').setup {
     end
     return ''
   end,
-}
+})

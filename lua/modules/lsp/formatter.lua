@@ -36,7 +36,7 @@ require('formatter').setup({
       require('formatter.filetypes.lua').stylua,
     },
     python = {
-      require('formatter.filetypes.python').autopep8,
+      require('formatter.filetypes.python').black,
     },
     javascript = {
       require('formatter.filetypes.javascript').prettier,
@@ -60,7 +60,7 @@ require('formatter').setup({
 -- Format after save
 -- vim.cmd([[
 -- augroup FormatAutogroup
-    -- autocmd!
-    -- autocmd BufWritePost * FormatWrite
+-- autocmd!
+-- autocmd BufWritePost * FormatWrite
 -- augroup END
 -- ]])

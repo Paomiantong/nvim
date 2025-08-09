@@ -1,7 +1,7 @@
-local util = require "overseer.util"
+local util = require('overseer.util')
 
 return {
-  desc = "Open a hsplit on task start",
+  desc = 'Open a hsplit on task start',
   -- Define parameters that can be passed in to the component
   params = {
     -- See :help overseer-params
@@ -25,11 +25,15 @@ return {
       on_start = function(self, task)
         -- Iterate over windows to find and close terminal splits
         for _, winid in ipairs(util.get_fixed_wins()) do
-          local buf_type = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(winid), "buftype")
-          if buf_type == "terminal" then vim.api.nvim_win_call(winid, function() vim.cmd [[close]] end) end
+          local buf_type = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(winid), 'buftype')
+          if buf_type == 'terminal' then
+            vim.api.nvim_win_call(winid, function()
+              vim.cmd([[close]])
+            end)
+          end
         end
         -- If we're currently in the task list, open a split in the nearest other window
-        if vim.bo.filetype == "OverseerList" then
+        if vim.bo.filetype == 'OverseerList' then
           for _, winid in ipairs(util.get_fixed_wins()) do
             if not vim.wo[winid].winfixwidth then
               util.go_win_no_au(winid)
@@ -37,9 +41,9 @@ return {
             end
           end
         end
-        vim.cmd [[split | resize 5%]]
+        vim.cmd([[split | resize 5%]])
         util.set_term_window_opts()
-        vim.fn.feedkeys("i", "n")
+        vim.fn.feedkeys('i', 'n')
         vim.api.nvim_win_set_buf(0, task:get_bufnr())
         util.scroll_to_end(0)
       end,
@@ -50,7 +54,7 @@ return {
       on_pre_result = function(self, task)
         -- Called when the task is finalizing.
         -- Return a map-like table value here to merge it into the task result.
-        return { foo = { "bar", "baz" } }
+        return { foo = { 'bar', 'baz' } }
       end,
       ---@param result table A result table.
       on_preprocess_result = function(self, task, result)

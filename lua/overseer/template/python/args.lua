@@ -9,7 +9,7 @@ return {
     interactive = { optional = true, type = 'boolean', default = false },
   },
   builder = function(params)
-    local args = { vim.fn.expand '%:p' }
+    local args = { vim.fn.expand('%:p') }
     if params.interactive then
       table.insert(args, 1, '-i')
     end
@@ -17,10 +17,10 @@ return {
       args = vim.list_extend(args, params.args)
     end
     return {
-      name = vim.fn.expand '%:t',
+      name = vim.fn.expand('%:t'),
       cmd = 'python3',
       args = args,
-      cwd = params.cwd and params.cwd or vim.fn.expand '%:p:h',
+      cwd = params.cwd and params.cwd or vim.fn.expand('%:p:h'),
       components = {
         'task_list_on_start',
         'display_duration',

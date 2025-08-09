@@ -41,7 +41,7 @@ function pack:boot_strap()
     lockfile = helper.get_data_path() .. '/lazy-lock.json',
     dev = { path = '~/Workspace' },
     git = {
-        url_format = "https://gh-proxy.com/https://github.com/%s.git",
+      url_format = 'https://gh-proxy.com/https://github.com/%s.git',
     },
   }
   self:load_modules_packages()

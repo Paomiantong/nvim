@@ -14,12 +14,12 @@ local conf = require('modules.ui.config')
 --   priority = 1000,
 -- })
 package({
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-    config = function()
-        vim.cmd.colorscheme "catppuccin-frappe"
-    end
+  'catppuccin/nvim',
+  name = 'catppuccin',
+  priority = 1000,
+  config = function()
+    vim.cmd.colorscheme('catppuccin-frappe')
+  end,
 })
 
 -- package({
@@ -29,47 +29,58 @@ package({
 -- })
 
 package({
-    'rebelot/heirline.nvim',
-    event = {'BufReadPre', 'BufNewFile'},
-    dependencies = {
-        'linrongbin16/lsp-progress.nvim',
-        config = function()
-            require 'modules.ui.heirline.lspprogress'
-        end
-    },
-    init = function()
-        vim.keymap.set('n', '<leader>tt', function()
-            vim.o.showtabline = vim.o.showtabline == 0 and 2 or 0
-        end, {
-            desc = 'Toggle tabline'
-        })
-    end,
+  'rebelot/heirline.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
+  dependencies = {
+    'linrongbin16/lsp-progress.nvim',
     config = function()
-        vim.opt.cmdheight = 0
-        require('heirline').setup {
-            statusline = require 'modules.ui.heirline.statusline'
-        }
-    end
+      require('modules.ui.heirline.lspprogress')
+    end,
+  },
+  init = function()
+    vim.keymap.set('n', '<leader>tt', function()
+      vim.o.showtabline = vim.o.showtabline == 0 and 2 or 0
+    end, {
+      desc = 'Toggle tabline',
+    })
+  end,
+  config = function()
+    vim.opt.cmdheight = 0
+    require('heirline').setup({
+      statusline = require('modules.ui.heirline.statusline'),
+    })
+  end,
 })
 
 package({
-    'akinsho/bufferline.nvim',
-    config = conf.nvim_bufferline,
-    dependencies = {'nvim-tree/nvim-web-devicons'}
-    -- version = 'v3.*',
+  'akinsho/bufferline.nvim',
+  config = conf.nvim_bufferline,
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  -- version = 'v3.*',
 })
 
-local enable_indent_filetype = {'go', 'lua', 'sh', 'rust', 'cpp', 'c', 'typescript', 'typescriptreact', 'javascript',
-                                'json', 'python'}
+local enable_indent_filetype = {
+  'go',
+  'lua',
+  'sh',
+  'rust',
+  'cpp',
+  'c',
+  'typescript',
+  'typescriptreact',
+  'javascript',
+  'json',
+  'python',
+}
 
 package({
-    'lukas-reineke/indent-blankline.nvim',
-    ft = enable_indent_filetype,
-    config = conf.indent_blankline
+  'lukas-reineke/indent-blankline.nvim',
+  ft = enable_indent_filetype,
+  config = conf.indent_blankline,
 })
 
 package({
-    'lewis6991/gitsigns.nvim',
-    event = {'BufRead', 'BufNewFile'},
-    config = conf.gitsigns
+  'lewis6991/gitsigns.nvim',
+  event = { 'BufRead', 'BufNewFile' },
+  config = conf.gitsigns,
 })

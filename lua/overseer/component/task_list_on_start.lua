@@ -1,8 +1,8 @@
-local util = require("overseer.util")
-local window = require("overseer.window")
+local util = require('overseer.util')
+local window = require('overseer.window')
 
 return {
-  desc = "Open task list on task start",
+  desc = 'Open task list on task start',
   -- Define parameters that can be passed in to the component
   params = {
     -- See :help overseer-params
@@ -25,7 +25,7 @@ return {
       end,
       on_start = function(self, task)
         -- If we're currently in the task list, open a split in the nearest other window
-        window.open({direction = "right"})
+        window.open({ direction = 'right' })
       end,
       on_reset = function(self, task)
         -- Called when the task is reset to run again
@@ -34,7 +34,7 @@ return {
       on_pre_result = function(self, task)
         -- Called when the task is finalizing.
         -- Return a map-like table value here to merge it into the task result.
-        return {foo = {"bar", "baz"}}
+        return { foo = { 'bar', 'baz' } }
       end,
       ---@param result table A result table.
       on_preprocess_result = function(self, task, result)

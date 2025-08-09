@@ -1,4 +1,4 @@
-local components = require 'modules.ui.heirline.components'
+local components = require('modules.ui.heirline.components')
 
 return { -- statusline
   components.RightPadding(components.Mode, 2),

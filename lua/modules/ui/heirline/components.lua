@@ -1,7 +1,7 @@
-local palette = require('catppuccin.palettes').get_palette 'mocha'
-local utils = require 'heirline.utils'
-local conditions = require 'heirline.conditions'
-local icons = require 'modules.ui.icons'
+local palette = require('catppuccin.palettes').get_palette('mocha')
+local utils = require('heirline.utils')
+local conditions = require('heirline.conditions')
+local icons = require('modules.ui.icons')
 local colors = {
   diag_warn = utils.get_highlight('DiagnosticWarn').fg,
   diag_error = utils.get_highlight('DiagnosticError').fg,
@@ -185,7 +185,7 @@ M.LSPActive = {
   provider = function()
     local names = {}
     ---@diagnostic disable-next-line: deprecated
-    for _, server in pairs(vim.lsp.get_clients { bufnr = 0 }) do
+    for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
       table.insert(names, server.name)
     end
     return table.concat(names, ',')
@@ -208,7 +208,7 @@ M.FileType = {
 
 M.CodeiumStatus = {
   init = function(self)
-    self.codeium_exist = vim.fn.exists '*codeium#GetStatusString' == 1
+    self.codeium_exist = vim.fn.exists('*codeium#GetStatusString') == 1
     self.codeium_status = self.codeium_exist and vim.fn['codeium#GetStatusString']() or nil
   end,
   provider = function(self)
@@ -415,16 +415,18 @@ M.FilePath = {
 M.FileFlags = {
   {
     condition = function(self)
-      return vim.fn.fnamemodify(self.filename, ':.') ~= '' and vim.api.nvim_get_option_value('modified', { buf = self.bufnr })
+      return vim.fn.fnamemodify(self.filename, ':.') ~= ''
+        and vim.api.nvim_get_option_value('modified', { buf = self.bufnr })
     end,
-    provider = ' 􀴥 ',
+    provider = '  ',
     hl = function(self)
       return { fg = palette.text, bold = self.is_active }
     end,
   },
   {
     condition = function(self)
-      return not vim.api.nvim_get_option_value('modifiable', { buf = self.bufnr }) or vim.api.nvim_get_option_value('readonly', { buf = self.bufnr })
+      return not vim.api.nvim_get_option_value('modifiable', { buf = self.bufnr })
+        or vim.api.nvim_get_option_value('readonly', { buf = self.bufnr })
     end,
     provider = function(self)
       if vim.api.nvim_get_option_value('buftype', { buf = self.bufnr }) == 'terminal' then
@@ -442,22 +444,22 @@ M.Overseer = {
     return package.loaded.overseer
   end,
   init = function(self)
-    local tasks = require('overseer.task_list').list_tasks { unique = true }
+    local tasks = require('overseer.task_list').list_tasks({ unique = true })
     local tasks_by_status = require('overseer.util').tbl_group_by(tasks, 'status')
     self.tasks = tasks_by_status
   end,
   static = {
     symbols = {
-      ['CANCELED'] = ' 􀕧 ',
-      ['FAILURE'] = ' 􀁐 ',
-      ['SUCCESS'] = ' 􀁢 ',
-      ['RUNNING'] = ' 􁾤 ',
+      ['CANCELED'] = '  ',
+      ['FAILURE'] = '  ',
+      ['SUCCESS'] = '  ',
+      ['RUNNING'] = '  ',
     },
   },
-  M.RightPadding(OverseerTasksForStatus 'CANCELED'),
-  M.RightPadding(OverseerTasksForStatus 'RUNNING'),
-  M.RightPadding(OverseerTasksForStatus 'SUCCESS'),
-  M.RightPadding(OverseerTasksForStatus 'FAILURE'),
+  M.RightPadding(OverseerTasksForStatus('CANCELED')),
+  M.RightPadding(OverseerTasksForStatus('RUNNING')),
+  M.RightPadding(OverseerTasksForStatus('SUCCESS')),
+  M.RightPadding(OverseerTasksForStatus('FAILURE')),
 }
 
 M.FileNameBlock = {
@@ -514,8 +516,10 @@ M.SearchOccurrence = {
   end,
   hl = { fg = palette.sky },
   provider = function()
-    local sinfo = vim.fn.searchcount { maxcount = 0 }
-    local search_stat = sinfo.incomplete > 0 and ' [?/?]' or sinfo.total > 0 and (' [%s/%s]'):format(sinfo.current, sinfo.total) or ''
+    local sinfo = vim.fn.searchcount({ maxcount = 0 })
+    local search_stat = (sinfo.incomplete or 0) > 0 and ' [?/?]'
+      or (sinfo.total or 0) > 0 and (' [%s/%s]'):format(sinfo.current, sinfo.total)
+      or ''
     return search_stat
   end,
 }
@@ -536,10 +540,10 @@ M.LspProgress = {
     'User',
     pattern = 'LspProgressStatusUpdated',
     callback = vim.schedule_wrap(function()
-      vim.cmd 'redrawstatus'
+      vim.cmd('redrawstatus')
     end),
   },
-  hl = { fg = palette.surface1, bold = false },
+  hl = { fg = palette.green, bold = false },
 }
 
 return M

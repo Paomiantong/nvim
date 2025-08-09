@@ -4,16 +4,16 @@ local map = require('core.keymap')
 local cmd = map.cmd
 
 map.n({
-    -- packer
-    ['<Leader>pu'] = cmd('Lazy update'),
-    ['<Leader>pi'] = cmd('Lazy install')
+  -- packer
+  ['<Leader>pu'] = cmd('Lazy update'),
+  ['<Leader>pi'] = cmd('Lazy install'),
 })
 
 map.n({
-    -- formatter
-    ['<space>f'] = cmd('Format')
+  -- formatter
+  ['<space>f'] = cmd('Format'),
 }, {
-    silent = true
+  silent = true,
 })
 
 -- Lspsaga

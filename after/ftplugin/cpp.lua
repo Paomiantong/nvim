@@ -1,4 +1,4 @@
-vim.lsp.start {
+vim.lsp.start({
   name = 'clangd',
   capabilities = {
     textDocument = {
@@ -20,4 +20,4 @@ vim.lsp.start {
     'configure.ac', -- AutoTools
   },
   single_file_support = true,
-}
+})

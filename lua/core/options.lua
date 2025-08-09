@@ -70,6 +70,8 @@ opt.relativenumber = true
 opt.signcolumn = 'yes'
 opt.spelloptions = 'camel'
 
+opt.splitbelow = true
+
 --opt.textwidth = 100
 --opt.colorcolumn = '100'
 -- opt.conceallevel = 2
