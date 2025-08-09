@@ -464,7 +464,7 @@ M.Overseer = {
 
 M.WhichPy = {
   condition = function()
-    return package.loaded['internal.whichpy']
+    return package.loaded['internal.whichpy'] and vim.bo.filetype == 'python'
   end,
   init = function(self)
     self.env_name = require('internal.whichpy.envs').current_selected_name() or 'global'

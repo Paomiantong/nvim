@@ -70,8 +70,10 @@ M.handle_select = function(selected, should_cache)
     vim.env.VIRTUAL_ENV = nil
     vim.env.CONDA_PREFIX = nil
   end
-  env_name = env_var.val and vim.fs.basename(env_var.val) or nil
-
+  env_name = selected.locator_name
+  if env_var.val ~= nil then
+    env_name = env_name .. vim.fs.basename(env_var.val)
+  end
   util.notify_chenv('Venv', vim.env.VIRTUAL_ENV)
   util.notify_chenv('Conda', vim.env.CONDA_PREFIX)
 
