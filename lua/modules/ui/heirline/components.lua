@@ -462,6 +462,22 @@ M.Overseer = {
   M.RightPadding(OverseerTasksForStatus('FAILURE')),
 }
 
+M.WhichPy = {
+  condition = function()
+    return package.loaded['internal.whichpy']
+  end,
+  init = function(self)
+    self.env_name = require('internal.whichpy.envs').current_selected_name() or 'global'
+  end,
+  provider = function(self)
+    if self.env_name == nil then
+      return '󰜼 No env'
+    end
+    return ' ' .. self.env_name
+  end,
+  hl = { fg = palette.text, bold = true },
+}
+
 M.FileNameBlock = {
   init = function(self)
     local bufnr = self.bufnr and self.bufnr or 0

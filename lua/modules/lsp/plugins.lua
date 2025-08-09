@@ -90,3 +90,13 @@ package({
     opts = conf.auto_pairs,
   },
 })
+
+package({
+  dir = vim.fn.stdpath('config') .. '/lua/internal/whichpy',
+  event = { 'VeryLazy', 'LspAttach' },
+  config = function()
+    require('internal.whichpy').setup({
+      update_path_env = true, -- whether to adjust PATH when selecting interpreter
+    })
+  end,
+})

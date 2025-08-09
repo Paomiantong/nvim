@@ -87,4 +87,5 @@ require('core.autocmds')
 
 require('keymap')
 require('internal.bbye')
+-- require('internal.whichpy').setup({})
 -- require('internal.quickrun')

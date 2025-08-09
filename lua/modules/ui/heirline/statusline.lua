@@ -15,6 +15,7 @@ return { -- statusline
   components.RightPadding(components.Formatters, 0),
   components.RightPadding(components.SimpleIndicator),
   components.RightPadding(components.FileType, 0),
+  components.RightPadding(components.WhichPy, 0),
   components.RightPadding(components.Overseer, 0),
   components.RightPadding(components.Ruler),
   components.ScrollBar,
