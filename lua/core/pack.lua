@@ -4,6 +4,8 @@ local helper = require('core.helper')
 local pack = {}
 pack.__index = pack
 
+pack.mirror = 'https://gh-proxy.com/'
+
 function pack:load_modules_packages()
   local modules_dir = helper.get_config_path() .. '/lua/modules'
   self.repos = {}
@@ -32,7 +34,7 @@ function pack:boot_strap()
   local lazy_path = string.format('%s/lazy/lazy.nvim', helper.get_data_path())
   local state = uv.fs_stat(lazy_path)
   if not state then
-    local cmd = '!git clone https://gh-proxy.com/https://github.com/folke/lazy.nvim.git ' .. lazy_path
+    local cmd = '!git clone ' .. pack.mirror .. 'https://github.com/folke/lazy.nvim.git ' .. lazy_path
     api.nvim_command(cmd)
   end
   vim.opt.runtimepath:prepend(lazy_path)
@@ -41,7 +43,7 @@ function pack:boot_strap()
     lockfile = helper.get_data_path() .. '/lazy-lock.json',
     dev = { path = '~/Workspace' },
     git = {
-      url_format = 'https://gh-proxy.com/https://github.com/%s.git',
+      url_format = pack.mirror .. 'https://github.com/%s.git',
     },
   }
   self:load_modules_packages()
