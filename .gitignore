@@ -8,3 +8,4 @@ telescope.log
 **/test.exe
 **/test
 lua/modules/local
+lua/local

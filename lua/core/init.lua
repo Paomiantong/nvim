@@ -80,10 +80,14 @@ if vim.fn.exists('g:neovide') then
   vim.g.neovide_scroll_animation_length = 0.3
 end
 
+pcall(require, 'local.plugin')
+
 require('core.pack'):boot_strap()
 require('core.options')
 require('core.lsp')
 require('core.autocmds')
+
+pcall(require, 'local')
 
 require('keymap')
 require('internal.bbye')
