@@ -54,6 +54,7 @@ function SearchJob:start()
       elseif ctx.co then
         for info in ctx.co() do
           table.insert(self._temp_envs, info)
+          -- util.notify(vim.inspect(info), { level = vim.log.levels.INFO })
           if self.on_result then
             self.on_result(info)
           end
@@ -64,9 +65,42 @@ function SearchJob:start()
       end
     end
 
-    require('internal.whichpy.envs').set_envs(self._temp_envs)
-    self.on_finish()
-    self.update_hook(self, nil, nil)
+    -- 新增: 异步获取版本信息
+    local function fetch_versions(envs, done)
+      local remaining = 0
+      for _, info in ipairs(envs) do
+        -- 约定: 尝试 executable / path 字段
+        local exe = info.executable or info.path
+        if exe and not info.version then
+          remaining = remaining + 1
+          vim.system({ exe, '--version' }, { text = true }, function(obj)
+            local out = ((obj.stdout or '') .. (obj.stderr or '')):gsub('%s+$', '')
+            -- 常见输出: Python 3.11.4
+            local ver = out:match('[Pp]ython%s+([%d%.]+)') or out
+            info.version = ver
+            -- 回调更新（可选, 让 UI 刷新版本）
+            if self.on_result then
+              vim.schedule(function()
+                self.on_result(info)
+              end)
+            end
+            remaining = remaining - 1
+            if remaining == 0 then
+              vim.schedule(done)
+            end
+          end)
+        end
+      end
+      if remaining == 0 then
+        done()
+      end
+    end
+
+    fetch_versions(self._temp_envs, function()
+      require('internal.whichpy.envs').set_envs(self._temp_envs)
+      self.on_finish()
+      self.update_hook(self, nil, nil)
+    end)
   end)()
 end
 

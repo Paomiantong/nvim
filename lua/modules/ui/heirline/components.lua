@@ -476,6 +476,12 @@ M.WhichPy = {
     return ' ' .. self.env_name
   end,
   hl = { fg = palette.text, bold = true },
+  on_click = {
+    callback = function(_, _, _, button)
+      vim.cmd('WhichPySearch')
+    end,
+    name = 'heirline_whichpy_callback',
+  },
 }
 
 M.FileNameBlock = {

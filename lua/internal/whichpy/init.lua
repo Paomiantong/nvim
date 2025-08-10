@@ -17,6 +17,12 @@ function M.setup(opts)
     nargs = '*',
     desc = 'Search for Python interpreters using WhichPy locators',
   })
+  vim.api.nvim_create_user_command('WhichPyClearCache', function(args)
+    envs.clear_cache()
+  end, {
+    nargs = '*',
+    desc = 'Clear the Python interpreter cache',
+  })
 end
 
 return M

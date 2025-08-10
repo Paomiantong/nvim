@@ -70,10 +70,7 @@ M.handle_select = function(selected, should_cache)
     vim.env.VIRTUAL_ENV = nil
     vim.env.CONDA_PREFIX = nil
   end
-  env_name = selected.locator_name
-  if env_var.val ~= nil then
-    env_name = env_name .. vim.fs.basename(env_var.val)
-  end
+  env_name = selected:env_name()
   util.notify_chenv('Venv', vim.env.VIRTUAL_ENV)
   util.notify_chenv('Conda', vim.env.CONDA_PREFIX)
 
@@ -93,7 +90,7 @@ M.handle_select = function(selected, should_cache)
     vim.fn.mkdir(config.cache_dir, 'p')
     local filename = vim.fn.getcwd():gsub('[\\/:]+', '%%')
     local f = assert(io.open(vim.fs.joinpath(config.cache_dir, filename), 'wb'))
-    f:write(selected.path .. '\n' .. selected.locator_name)
+    f:write(selected.path .. '\n' .. selected.locator_name .. '\n' .. selected.version)
     f:close()
   end
 
@@ -162,7 +159,7 @@ M.retrieve_cache = function()
   f:close()
 
   M.handle_select(
-    InterpreterInfo:new(require('internal.whichpy.locator').get_locator(lines[2] or 'global'), lines[1]),
+    InterpreterInfo:new(require('internal.whichpy.locator').get_locator(lines[2] or 'global'), lines[1], lines[3]),
     false
   )
 end
@@ -173,6 +170,17 @@ end
 
 M.current_selected_name = function()
   return env_name
+end
+
+M.clear_cache = function()
+  if not vim.fn.isdirectory(config.cache_dir) then
+    return
+  end
+  local files = vim.fn.readdir(config.cache_dir)
+  for _, file in ipairs(files) do
+    os.remove(vim.fs.joinpath(config.cache_dir, file))
+  end
+  util.notify('Whichpy Cache cleared.')
 end
 
 return M

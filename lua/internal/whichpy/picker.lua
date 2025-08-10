@@ -10,6 +10,7 @@ function Picker:setup()
 end
 
 function Picker:_show(opts, envs)
+  -- print('Picker:_show', vim.inspect(opts), vim.inspect(envs))
   vim.schedule(function()
     vim.ui.select(envs, opts, function(choice)
       if choice ~= nil then
@@ -19,18 +20,20 @@ function Picker:_show(opts, envs)
   end)
 end
 
+function Picker:_show_factor(opts)
+  return function()
+    self:_show(opts, get_envs())
+  end
+end
+
 function Picker:show()
   local opts = self:setup()
-
+  -- self:_show_factor(opts)
   if SearchJob:status() == nil then
-    SearchJob:update_hook(nil, function()
-      self:_show(opts, get_envs())
-    end)
+    SearchJob:update_hook(nil, self:_show_factor(opts))
     SearchJob:start()
   elseif SearchJob:status() ~= 'dead' then
-    SearchJob:update_hook(nil, function()
-      self:_show(opts, get_envs())
-    end)
+    SearchJob:update_hook(nil, self:_show_factor(opts))
   else
     self:_show(opts, get_envs())
   end

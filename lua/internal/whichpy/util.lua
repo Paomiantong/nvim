@@ -40,4 +40,12 @@ function M.deduplicate(list)
   return res
 end
 
+function M.make_iter(data)
+  return function()
+    return coroutine.wrap(function()
+      coroutine.yield(data)
+    end)
+  end
+end
+
 return M
