@@ -41,7 +41,7 @@ return {
             end
           end
         end
-        vim.cmd([[split | resize 5%]])
+        vim.cmd([[split | resize 10%]])
         util.set_term_window_opts()
         vim.fn.feedkeys('i', 'n')
         vim.api.nvim_win_set_buf(0, task:get_bufnr())
