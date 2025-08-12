@@ -81,21 +81,21 @@ function M.config()
           },
         },
         header = [[
-   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣭⣿⣶⣿⣦⣼⣆
-    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦
-          ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷⠄⠄⠄⠄⠻⠿⢿⣿⣧⣄
-           ⣸⣿⣿⢧ ⢻⠻⣿⣿⣷⣄⣀⠄⠢⣀⡀⠈⠙⠿⠄
-          ⢠⣿⣿⣿⠈  ⠡⠌⣻⣿⣿⣿⣿⣿⣿⣿⣛⣳⣤⣀⣀
-   ⢠⣧⣶⣥⡤⢄ ⣸⣿⣿⠘⠄ ⢀⣴⣿⣿⡿⠛⣿⣿⣧⠈⢿⠿⠟⠛⠻⠿⠄
-  ⣰⣿⣿⠛⠻⣿⣿⡦⢹⣿⣷   ⢊⣿⣿⡏  ⢸⣿⣿⡇ ⢀⣠⣄⣾⠄
- ⣠⣿⠿⠛⠄⢀⣿⣿⣷⠘⢿⣿⣦⡀ ⢸⢿⣿⣿⣄ ⣸⣿⣿⡇⣪⣿⡿⠿⣿⣷⡄
- ⠙⠃   ⣼⣿⡟  ⠈⠻⣿⣿⣦⣌⡇⠻⣿⣿⣷⣿⣿⣿ ⣿⣿⡇⠄⠛⠻⢷⣄
-      ⢻⣿⣿⣄   ⠈⠻⣿⣿⣿⣷⣿⣿⣿⣿⣿⡟ ⠫⢿⣿⡆
-       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃
-     ⢰⣶  ⣶ ⢶⣆⢀⣶⠂⣶⡶⠶⣦⡄⢰⣶⠶⢶⣦  ⣴⣶
-     ⢸⣿⠶⠶⣿ ⠈⢻⣿⠁ ⣿⡇ ⢸⣿⢸⣿⢶⣾⠏ ⣸⣟⣹⣧
-     ⠸⠿  ⠿  ⠸⠿  ⠿⠷⠶⠿⠃⠸⠿⠄⠙⠷⠤⠿⠉⠉⠿⠆
-    ]],
+                                    ██████                                    
+                                ████▒▒▒▒▒▒████                                
+                              ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                              
+                            ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                            
+                          ██▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒                              
+                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▓▓▓▓                          
+                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▒▒▓▓                          
+                        ██▒▒▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒    ██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒██▒▒▒▒▒▒██▒▒▒▒▒▒▒▒██▒▒▒▒██                        
+                        ████  ██▒▒██  ██▒▒▒▒██  ██▒▒██                        
+                        ██      ██      ████      ████                        ]],
       },
       sections = {
         {
@@ -121,6 +121,7 @@ function M.config()
         patterns = { 'GitSign', 'MiniDiffSign' },
       },
     },
+    terminal = {}
   })
 
   local map = function(key, func, desc)
@@ -128,6 +129,8 @@ function M.config()
       desc = desc,
     })
   end
+  -- all keymaps for snacks.terminal
+  map('<leader>tt', '<cmd>lua Snacks.terminal.toggle()<cr>', 'Toggle a terminal')
   -- all keymaps for snacks.picker
   map('<leader>fp', function()
     Snacks.picker.projects({
@@ -195,6 +198,7 @@ function M.config()
   map('<leader>fc', function()
     Snacks.picker.files({
       cwd = vim.fn.stdpath('config'),
+      ignored = true
     })
   end, 'Find nvim config file')
   map('<leader>f/', Snacks.picker.search_history, 'Find search history')

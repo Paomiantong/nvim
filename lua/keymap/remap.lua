@@ -7,14 +7,11 @@ vim.g.mapleader = '\\'
 -- move
 map.a({
   --up
-  ['h'] = 'k',
-  ['H'] = '5k',
+  ['K'] = '5k',
   --down
-  ['k'] = 'j',
-  ['K'] = '5j',
+  ['J'] = '5j',
   --left
-  ['j'] = 'h',
-  ['J'] = '5h',
+  ['H'] = '5h',
   --right
   ['L'] = '5l',
 })
@@ -46,11 +43,11 @@ map.a({
 map.a({
   -- window jump
   --up
-  ['<C-h>'] = '<C-w>k',
+  ['<C-k>'] = '<C-w>k',
   --down
-  ['<C-k>'] = '<C-w>j',
+  ['<C-j>'] = '<C-w>j',
   --left
-  ['<C-j>'] = '<C-w>h',
+  ['<C-h>'] = '<C-w>h',
   --right
   ['<C-l>'] = '<C-w>l',
 })
