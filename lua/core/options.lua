@@ -93,3 +93,9 @@ if vim.loop.os_uname().sysname == 'Darwin' then
   vim.g.python_host_prog = '/usr/bin/python'
   vim.g.python3_host_prog = '/usr/local/bin/python3'
 end
+
+if vim.uv.os_uname().sysname == 'Windows_NT' then
+  vim.o.shell = "powershell"
+else
+  vim.o.shell = vim.env.SHELL .. ' -l'
+end

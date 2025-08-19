@@ -18,6 +18,33 @@ package({
   name = 'catppuccin',
   priority = 1000,
   config = function()
+    require('catppuccin').setup {
+      term_colors = true,
+      integrations = {
+        aerial = true,
+        diffview = true,
+        mini = {
+          enabled = true,
+          indentscope_color = 'sky',
+        },
+        noice = true,
+        -- overseer = true,
+        telescope = {
+          enabled = true,
+          -- style = "nvchad",
+        },
+        nvimtree = false,
+        neotree = true,
+        which_key = true,
+        treesitter = true,
+        notify = true,
+        gitsigns = true,
+        flash = true,
+        blink_cmp = true,
+        mason = true,
+        snacks = true,
+      },
+    }
     vim.cmd.colorscheme('catppuccin-frappe')
   end,
 })
