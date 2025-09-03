@@ -1,7 +1,7 @@
 return {
   settings = {
     basedpyright = {
-      analysis = { typeCheckingMode = 'off' },
+      analysis = { typeCheckingMode = 'basic' },
     },
   },
   root_makers = {

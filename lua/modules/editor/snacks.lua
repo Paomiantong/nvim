@@ -2,6 +2,23 @@ local M = {}
 
 M.project_root = '~'
 
+M.header = [[
+                                    ██████                                    
+                                ████▒▒▒▒▒▒████                                
+                              ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                              
+                            ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                            
+                          ██▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒                              
+                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▓▓▓▓                          
+                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▒▒▓▓                          
+                        ██▒▒▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒    ██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
+                        ██▒▒██▒▒▒▒▒▒██▒▒▒▒▒▒▒▒██▒▒▒▒██                        
+                        ████  ██▒▒██  ██▒▒▒▒██  ██▒▒██                        
+                        ██      ██      ████      ████                        ]]
+
 function M.config()
   require('snacks').setup({
     notifier = {},
@@ -80,22 +97,7 @@ function M.config()
             action = ':qa',
           },
         },
-        header = [[
-                                    ██████                                    
-                                ████▒▒▒▒▒▒████                                
-                              ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                              
-                            ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                            
-                          ██▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒                              
-                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▓▓▓▓                          
-                          ██▒▒▒▒▒▒  ▒▒▓▓▒▒▒▒▒▒  ▒▒▓▓                          
-                        ██▒▒▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒    ██                        
-                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
-                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
-                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
-                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                        
-                        ██▒▒██▒▒▒▒▒▒██▒▒▒▒▒▒▒▒██▒▒▒▒██                        
-                        ████  ██▒▒██  ██▒▒▒▒██  ██▒▒██                        
-                        ██      ██      ████      ████                        ]],
+        header = M.header,
       },
       sections = {
         {
@@ -121,7 +123,13 @@ function M.config()
         patterns = { 'GitSign', 'MiniDiffSign' },
       },
     },
-    terminal = {}
+    terminal = {},
+    indent = {
+      enabled = true,
+      indent = { enabled = true },
+      animate = { duration = { step = 10, duration = 100 } },
+      scope = { enabled = true, char = '┊', underline = false, only_current = true, priority = 1000 },
+    },
   })
 
   local map = function(key, func, desc)
@@ -198,7 +206,7 @@ function M.config()
   map('<leader>fc', function()
     Snacks.picker.files({
       cwd = vim.fn.stdpath('config'),
-      ignored = true
+      ignored = true,
     })
   end, 'Find nvim config file')
   map('<leader>f/', Snacks.picker.search_history, 'Find search history')

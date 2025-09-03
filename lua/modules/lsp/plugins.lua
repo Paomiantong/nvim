@@ -40,19 +40,34 @@ package({
       documentation = {
         auto_show = true,
       },
+      keyword = {
+        range = 'full',
+      },
+      list = {
+        selection = {
+          preselect = false,
+        },
+      },
     },
     keymap = {
       preset = 'default',
+      ['<M-o>'] = { 'show', 'show_documentation', 'hide_documentation' },
       ['<C-u>'] = { 'scroll_documentation_up', 'fallback' },
       ['<C-d>'] = { 'scroll_documentation_down', 'fallback' },
       ['<Up>'] = { 'select_prev', 'fallback' },
       ['<Down>'] = { 'select_next', 'fallback' },
+      ['<Tab>'] = { 'select_next', 'snippet_forward', 'fallback' },
+      ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback' },
       ['<Enter>'] = { 'accept', 'fallback' },
     },
     signature = {
       enabled = true,
     },
     cmdline = {
+      keymap = {
+        ['<Tab>'] = { 'show', 'accept' },
+        ['<Enter>'] = { 'select_and_accept', 'fallback' },
+      },
       completion = {
         menu = {
           auto_show = true,
@@ -62,8 +77,14 @@ package({
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
       providers = {
-        snippets = {
-          score_offset = 1000,
+        cmdline = {
+          min_keyword_length = function(ctx)
+            -- when typing a command, only show when the keyword is 3 characters or longer
+            if ctx.mode == 'cmdline' and string.find(ctx.line, ' ') == nil then
+              return 3
+            end
+            return 0
+          end,
         },
       },
     },

@@ -95,7 +95,7 @@ if vim.loop.os_uname().sysname == 'Darwin' then
 end
 
 if vim.uv.os_uname().sysname == 'Windows_NT' then
-  vim.o.shell = "powershell"
+  vim.o.shell = 'powershell'
 else
   vim.o.shell = vim.env.SHELL .. ' -l'
 end
