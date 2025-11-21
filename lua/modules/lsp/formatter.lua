@@ -36,7 +36,7 @@ require('formatter').setup({
       require('formatter.filetypes.lua').stylua,
     },
     python = {
-      require('formatter.filetypes.python').black,
+      require('formatter.filetypes.python').ruff,
     },
     javascript = {
       require('formatter.filetypes.javascript').prettier,
@@ -46,6 +46,9 @@ require('formatter').setup({
     },
     html = {
       require('formatter.filetypes.html').prettier,
+    },
+    yaml = {
+      require('formatter.filetypes.yaml').prettier,
     },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype

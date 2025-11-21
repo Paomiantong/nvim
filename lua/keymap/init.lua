@@ -3,6 +3,10 @@ require('keymap.remap')
 local map = require('core.keymap')
 local cmd = map.cmd
 
+map.nvsxoilct('<C-S-v>', function()
+  vim.api.nvim_paste(vim.fn.getreg('+'), true, -1)
+end, { noremap = true, silent = true })
+
 map.n({
   -- packer
   ['<Leader>pu'] = cmd('Lazy update'),

@@ -160,7 +160,7 @@ M.MacroRecording = {
       end,
       hl = { fg = palette.maroon, italic = false, bold = true },
     },
-    hl = { fg = palette.text, bg = palette.base },
+    -- hl = { fg = palette.text, bg = palette.base },
   },
   update = { 'RecordingEnter', 'RecordingLeave' },
 } -- MacroRecording
@@ -538,7 +538,14 @@ M.SearchOccurrence = {
   end,
   hl = { fg = palette.sky },
   provider = function()
-    local sinfo = vim.fn.searchcount({ maxcount = 0 })
+    -- 使用 pcall 捕获错误
+    -- 当输入的正则不合法（例如输入了一半的 \( ）时，searchcount 会报错
+    local ok, sinfo = pcall(vim.fn.searchcount, { maxcount = 0 })
+
+    if not ok or not sinfo then
+      return ''
+    end
+
     local search_stat = (sinfo.incomplete or 0) > 0 and ' [?/?]'
       or (sinfo.total or 0) > 0 and (' [%s/%s]'):format(sinfo.current, sinfo.total)
       or ''

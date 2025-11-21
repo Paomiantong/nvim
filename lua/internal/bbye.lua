@@ -1,225 +1,101 @@
--- Bbye (rewritten in Lua)
---
--- source: https://github.com/moll/vim-bbye/blob/master/plugin/bbye.vim
--- license:
---
--- Copyright (C) 2013 Andri Möll
---
--- This program is free software: you can redistribute it and/or modify it under
--- the terms of the GNU Affero General Public License as published by the Free
--- Software Foundation, either version 3 of the License, or any later version.
---
--- Additional permission under the GNU Affero GPL version 3 section 7:
--- If you modify this Program, or any covered work, by linking or
--- combining it with other code, such other code is not for that reason
--- alone subject to any of the requirements of the GNU Affero GPL version 3.
---
--- In summary:
--- - You can use this program for no cost.
--- - You can use this program for both personal and commercial reasons.
--- - You do not have to share your own program's code which uses this program.
--- - You have to share modifications (e.g bug-fixes) you've made to this program.
---
--- For the full copy of the GNU Affero General Public License see:
--- http://www.gnu.org/licenses.
+local api = vim.api
+local M = {}
 
-local buf_get_option = vim.api.nvim_buf_get_option --- @type function
-local buf_set_option = vim.api.nvim_buf_set_option --- @type function
-local buflisted = vim.fn.buflisted --- @type function
-local bufnr = vim.fn.bufnr --- @type function
-local command = vim.api.nvim_command --- @type function
-local get_current_buf = vim.api.nvim_get_current_buf --- @type function
-local get_current_win = vim.api.nvim_get_current_win --- @type function
-local get_option = vim.api.nvim_get_option --- @type function
-local list_wins = vim.api.nvim_list_wins --- @type function
-local notify = vim.notify
-local set_current_buf = vim.api.nvim_set_current_buf --- @type function
-local set_current_win = vim.api.nvim_set_current_win --- @type function
-local win_get_buf = vim.api.nvim_win_get_buf --- @type function
-local win_is_valid = vim.api.nvim_win_is_valid --- @type function
-local create_user_command = vim.api.nvim_create_user_command --- @type function
-
--------------------
--- Section: helpers
--------------------
-
-local cmd = vim.api.nvim_cmd
-    --- @param action string
-    --- @param buffer_number integer
-    --- @param force? boolean
-    --- @param mods? {[string]: any}
-    and function(action, buffer_number, force, mods)
-      vim.cmd[action]({ bang = force, count = buffer_number, mods = mods })
-    end
-  --- @param action string
-  --- @param buffer_number integer
-  --- @param force? boolean
-  --- @param mods? string
-  or function(action, buffer_number, force, mods)
-    command((mods or '') .. ' ' .. action .. (force and '!' or '') .. ' ' .. buffer_number)
-  end
-
-local enew = vim.api.nvim_cmd
-    --- The `:enew` command
-    --- @param force boolean
-    and function(force)
-      vim.cmd.enew({ bang = force })
-    end
-  --- The `:enew` command
-  --- @param force boolean
-  or function(force)
-    command('enew' .. (force and '!' or ''))
-  end
-
---- Use `vim.notify` to print an error `msg`
---- @param msg string
---- @return nil
+--- 通知辅助函数
 local function err(msg)
-  notify(msg, vim.log.levels.ERROR, { title = 'bbye' })
-  vim.v.errmsg = msg
+  vim.notify(msg, vim.log.levels.ERROR, { title = 'Bbye' })
 end
 
--- local empty_buffer = nil --- @type nil|integer
-
---- Create a new buffer.
---- @param force boolean if `true`, forcefully create the new buffer
---- @return nil
-local function new(force)
-  enew(force)
-
-  -- empty_buffer = get_current_buf()
-  vim.b.empty_buffer = true
-
-  -- Regular buftype warns people if they have unsaved text there.
-  -- Wouldn't want to lose someone's data:
-  buf_set_option(0, 'buftype', '')
-  buf_set_option(0, 'swapfile', false)
-
-  -- If empty and out of sight, delete it right away:
-  buf_set_option(0, 'bufhidden', 'wipe')
-
-  -- create_autocmd('BufWipeout', {
-  --     buffer = 0,
-  --     callback = function() state.close_buffer(empty_buffer) end,
-  --     group = create_augroup('bbye_empty_buffer', {})
-  -- })
+--- 创建一个新的空 buffer 并设置属性
+local function new_buffer()
+  vim.cmd('enew')
+  vim.bo.buftype = ''
+  vim.bo.swapfile = false
+  vim.bo.bufhidden = 'wipe'
 end
 
-------------------
--- Section: module
-------------------
+--- 核心删除逻辑
+--- @param action string 'bdelete' | 'bwipeout'
+--- @param force boolean 是否强制 (! bang)
+--- @param buf_ref? integer|string buffer ID 或名字
+function M.delete(action, force, buf_ref)
+  -- 修复逻辑：优先尝试转换数字 ID，处理 bufferline 传入 "5" 这种字符串的情况
+  local buf = tonumber(buf_ref)
 
---- @class bbye
-local bbye = {}
-
---- Delete a buffer
---- @param action string the command to use to delete the buffer (e.g. `'bdelete'`)
---- @param force boolean if true, forcefully delete the buffer
---- @param buffer? integer|string the name of the buffer.
---- @param mods? string|{[string]: any} the modifiers to the command (e.g. `'verbose'`)
---- @return nil
-function bbye.delete(action, force, buffer, mods)
-  local buffer_number = type(buffer) == 'string' and bufnr(buffer) or tonumber(buffer) or get_current_buf()
-
-  if buffer_number < 0 then
-    err('E516: No buffers were deleted. No match for ' .. buffer)
-    return
+  if not buf and buf_ref and buf_ref ~= '' then
+    buf = vim.fn.bufnr(buf_ref)
   end
 
-  local is_modified = buf_get_option(buffer_number, 'modified')
-
-  local has_confirm = get_option('confirm')
-  if type(mods) == 'table' then
-    has_confirm = has_confirm or mods.confirm
-  elseif mods then
-    has_confirm = has_confirm or mods:match('conf') ~= nil
+  if not buf then
+    buf = api.nvim_get_current_buf()
   end
 
-  if is_modified and not (force or has_confirm) then
-    err('E89: No write since last change for buffer ' .. buffer_number .. ' (add ! to override)')
-    return
+  -- 使用 nvim_buf_is_valid 检查更准确
+  if not api.nvim_buf_is_valid(buf) then
+    return err('未找到 Buffer: ' .. (buf_ref or ''))
   end
 
-  local current_window = get_current_win()
-
-  -- If the buffer is set to delete and it contains changes, we can't switch
-  -- away from it. Hide it before eventual deleting:
-  if is_modified and force then
-    buf_set_option(buffer_number, 'bufhidden', 'hide')
+  -- 检查是否已修改且未保存
+  if vim.bo[buf].modified and not force and not vim.o.confirm then
+    return err('E89: Buffer ' .. buf .. ' 已修改但未保存 (请加 ! 强制执行)')
   end
 
-  -- For cases where adding buffers causes new windows to appear or hiding some
-  -- causes windows to disappear and thereby decrement, loop backwards.
-  local wins = list_wins()
-  for i = #wins, 1, -1 do
-    local window_number = wins[i]
-    if win_get_buf(window_number) == buffer_number then
-      set_current_win(window_number)
+  -- 如果强制删除，先隐藏，防止切换时报错
+  if force then
+    vim.bo[buf].bufhidden = 'hide'
+  end
 
-      -- Bprevious also wraps around the buffer list, if necessary:
-      local ok = pcall(function()
-        command('BufferLineCyclePrev')
-        -- local focus_buffer = get_focus_on_close(buffer_number)
-        -- if focus_buffer then
-        --     set_current_buf(focus_buffer)
-        -- else
-        --     -- command 'bprevious'
-        --     command 'BufferLineCyclePrev'
-        -- end
-      end)
+  local cur_win = api.nvim_get_current_win()
 
-      if not (ok or vim.v.errmsg:match('E85')) then
-        return err(vim.v.errmsg)
+  -- 遍历所有窗口，如果窗口正在显示该 buffer，则切换到上一个 buffer
+  for _, win in ipairs(api.nvim_list_wins()) do
+    if api.nvim_win_get_buf(win) == buf then
+      api.nvim_set_current_win(win)
+
+      -- 尝试切换到上一个 Buffer
+      -- 优先尝试 bufferline 插件的命令，失败则使用原生 bprevious
+      if not pcall(vim.cmd, 'BufferLineCyclePrev') then
+        pcall(vim.cmd, 'bprevious')
       end
 
-      -- If the buffer is still the same, we couldn't find a new buffer,
-      -- and we need to create a new empty buffer.
-      if get_current_buf() == buffer_number then
-        new(force)
+      -- 如果切换失败（例如只剩一个 buffer），则创建一个新的空 buffer
+      if api.nvim_get_current_buf() == buf then
+        new_buffer()
       end
     end
   end
 
-  if win_is_valid(current_window) then
-    set_current_win(current_window)
+  -- 恢复光标到原来的窗口（如果该窗口还存在）
+  if api.nvim_win_is_valid(cur_win) then
+    api.nvim_set_current_win(cur_win)
   end
 
-  -- If it hasn't been already deleted by &bufhidden, end its pains now.
-  -- Unless it previously was an unnamed buffer and :enew returned it again.
-  --
-  -- Using buflisted() over bufexists() because bufhidden=delete causes the
-  -- buffer to still _exist_ even though it won't be :bdelete-able.
-  if buflisted(buffer_number) == 1 and buffer_number ~= get_current_buf() then
-    local no_errors = pcall(cmd, action, buffer_number, force, mods)
-    if not no_errors then
-      if vim.v.errmsg:match('E516') then
-        set_current_buf(buffer_number)
-      else
-        err(vim.v.errmsg)
-        return
-      end
+  -- 如果 Buffer 还在列表中，执行删除
+  if vim.fn.buflisted(buf) == 1 then
+    local ok, msg = pcall(vim.cmd, string.format('%s%s %d', action, force and '!' or '', buf))
+    if not ok and not msg:match('E516') then
+      err(msg)
     end
   end
 end
 
---- 'bdelete' a buffer
---- @param force boolean if true, forcefully delete the buffer
---- @param buffer? integer|string the name of the buffer.
---- @param mods? string|{[string]: any} the modifiers to the command (e.g. `'verbose'`)
---- @return nil
-function bbye.bdelete(force, buffer, mods)
-  bbye.delete('bdelete', force, buffer, mods)
+-- 导出函数别名
+function M.bdelete(force, buf)
+  M.delete('bdelete', force, buf)
+end
+function M.bwipeout(force, buf)
+  M.delete('bwipeout', force, buf)
 end
 
---- 'bwipeout' a buffer
---- @param force boolean if true, forcefully delete the buffer
---- @param buffer? integer|string the name of the buffer.
---- @param mods? string|{[string]: any} the modifiers to the command (e.g. `'verbose'`)
---- @return nil
-function bbye.bwipeout(force, buffer, mods)
-  bbye.delete('bwipeout', force, buffer, mods)
-end
+-- 注册命令 :BufferClose
+api.nvim_create_user_command('BufferClose', function(opts)
+  local buf = (opts.args and opts.args ~= '') and opts.args or nil
+  M.bdelete(opts.bang, buf)
+end, {
+  bang = true,
+  complete = 'buffer',
+  desc = '安全关闭 Buffer 而不关闭窗口 (Bbye)',
+  nargs = '?',
+})
 
-create_user_command('BufferClose', function(tbl)
-  bbye.bdelete(tbl.bang, tbl.args, tbl.smods or tbl.mods)
-end, { bang = true, complete = 'buffer', desc = 'Close the current buffer', nargs = '?' })
+return M
