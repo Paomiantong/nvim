@@ -50,6 +50,12 @@ require('formatter').setup({
     yaml = {
       require('formatter.filetypes.yaml').prettier,
     },
+    json = {
+      require('formatter.filetypes.json').prettier,
+    },
+    toml = {
+      require('formatter.filetypes.toml').tombi,
+    },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ['*'] = {

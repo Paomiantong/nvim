@@ -62,6 +62,9 @@ package({
     },
     signature = {
       enabled = true,
+      window = {
+        show_documentation = true,
+      }
     },
     cmdline = {
       keymap = {
