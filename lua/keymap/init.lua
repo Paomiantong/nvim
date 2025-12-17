@@ -15,7 +15,10 @@ map.n({
 
 map.n({
   -- formatter
-  ['<space>f'] = cmd('Format'),
+  -- ['<space>f'] = cmd('Format'),
+  ['<space>f'] = function()
+    require('conform').format()
+  end,
 }, {
   silent = true,
 })

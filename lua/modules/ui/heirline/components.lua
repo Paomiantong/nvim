@@ -46,7 +46,7 @@ M.ScrollBar = {
     local curr_line = vim.api.nvim_win_get_cursor(0)[1]
     local lines = vim.api.nvim_buf_line_count(0)
     local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
-    return string.rep(self.sbar[i], 2)
+    return self.sbar[i]
   end,
   hl = { fg = palette.yellow, bg = palette.base },
 }
@@ -65,6 +65,7 @@ M.RightPadding = function(child, num_space)
   end
   return result
 end
+
 M.Mode = {
   init = function(self)
     self.mode = vim.fn.mode(1)
@@ -563,7 +564,40 @@ M.SimpleIndicator = {
 
 M.LspProgress = {
   provider = function()
-    return require('lsp-progress').progress()
+    return require('lsp-progress').progress({
+      format = function(messages)
+        local active_clients = vim.lsp.get_clients()
+        local client_count = #active_clients
+
+        if #messages > 0 then
+          -- 修复开始：不能直接 concat messages
+          local status = {}
+          for _, msg in ipairs(messages) do
+            -- 这里可以自定义格式，比如 "[lua_ls] Loading..."
+            -- 提取 msg.name 和 msg.body
+            table.insert(status, ('[%s] %s'):format(msg.name, msg.body))
+          end
+          return table.concat(status, ' ')
+          -- 修复结束
+        end
+
+        if client_count <= 0 then
+          return '' -- 建议这里返回空字符串而不是数字0，否则状态栏会显示一个突兀的 "0"
+        else
+          local name_set = {}
+          local client_names = {}
+
+          for _, client in ipairs(active_clients) do
+            if client and client.name ~= '' and not name_set[client.name] then
+              name_set[client.name] = true
+              table.insert(client_names, '[' .. client.name .. ']')
+            end
+          end
+
+          return table.concat(client_names, ' ')
+        end
+      end,
+    })
   end,
   update = {
     'User',
@@ -572,7 +606,7 @@ M.LspProgress = {
       vim.cmd('redrawstatus')
     end),
   },
-  hl = { fg = palette.green, bold = false },
+  hl = { fg = palette.blue, bold = true },
 }
 
 return M

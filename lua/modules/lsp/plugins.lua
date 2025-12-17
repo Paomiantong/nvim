@@ -25,10 +25,15 @@ package({
   end,
 })
 
+-- package({
+--   'mhartington/formatter.nvim',
+--   config = conf.formatter,
+--   cmd = 'Format',
+-- })
+
 package({
-  'mhartington/formatter.nvim',
+  'stevearc/conform.nvim',
   config = conf.formatter,
-  cmd = 'Format',
 })
 
 package({
@@ -64,7 +69,7 @@ package({
       enabled = true,
       window = {
         show_documentation = true,
-      }
+      },
     },
     cmdline = {
       keymap = {
