@@ -45,7 +45,7 @@ package({
         snacks = true,
       },
     })
-    vim.cmd.colorscheme('catppuccin-frappe')
+    vim.cmd.colorscheme('catppuccin')
   end,
 })
 

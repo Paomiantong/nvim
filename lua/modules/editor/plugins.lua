@@ -23,7 +23,7 @@ package({
   'nvim-treesitter/nvim-treesitter',
   event = 'BufRead',
   run = ':TSUpdate',
-  dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
+  dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects', branch='main' },
   config = conf.nvim_treesitter,
 })
 
