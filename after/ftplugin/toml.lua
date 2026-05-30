@@ -1,1 +1,1 @@
-vim.lsp.enable('tombi')
+require('core.helper').enable_lsp({ 'tombi' })

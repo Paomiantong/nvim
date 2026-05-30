@@ -12,16 +12,23 @@ function M.setup(opts)
   lsp.create_autocmd()
   envs.retrieve_cache()
   vim.api.nvim_create_user_command('WhichPySearch', function(args)
-    picker:show()
+    picker:show({ force = args.bang })
   end, {
     nargs = '*',
-    desc = 'Search for Python interpreters using WhichPy locators',
+    bang = true,
+    desc = 'Search for Python interpreters (use ! to force a fresh scan)',
   })
-  vim.api.nvim_create_user_command('WhichPyClearCache', function(args)
+  vim.api.nvim_create_user_command('WhichPyReset', function()
+    envs.handle_reset()
+  end, {
+    nargs = 0,
+    desc = 'Restore LSP / DAP / env to their pre-WhichPy state and clear this cwd cache',
+  })
+  vim.api.nvim_create_user_command('WhichPyClearCache', function()
     envs.clear_cache()
   end, {
     nargs = '*',
-    desc = 'Clear the Python interpreter cache',
+    desc = 'Clear all cached Python interpreter selections',
   })
 end
 

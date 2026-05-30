@@ -1,4 +1,5 @@
-local get_interpreter_path = require('internal.whichpy.util').get_interpreter_path
+local util = require('internal.whichpy.util')
+local get_interpreter_path = util.get_interpreter_path
 local get_env_var_strategy = require('internal.whichpy.locator._common').get_env_var_strategy
 local InterpreterInfo = require('internal.whichpy.locator').InterpreterInfo
 
@@ -42,7 +43,7 @@ function Locator:_find(dir)
       if t == 'directory' then
         local path = get_interpreter_path(vim.fs.joinpath(dir, name), 'bin')
         if vim.uv.fs_stat(path) then
-          coroutine.yield(InterpreterInfo:new(self, path))
+          coroutine.yield(InterpreterInfo:new(self, path, util.parse_uv_dir_version(name)))
         end
       end
     end

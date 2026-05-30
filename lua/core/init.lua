@@ -46,7 +46,7 @@ return config
     )
     uv.fs_close(fd)
   else
-    LCOALCONF = require('local')
+    LOCALCONF = require('local')
   end
 end
 

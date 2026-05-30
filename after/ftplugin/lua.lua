@@ -1,1 +1,1 @@
-vim.lsp.enable('lua_ls')
+require('core.helper').enable_lsp({ 'lua_ls' })

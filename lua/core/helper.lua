@@ -28,4 +28,15 @@ function helper.get_cache_path()
   return cache .. '/nvim-cache/'
 end
 
+-- Enable LSP servers for the current ftplugin buffer, allowing per-machine
+-- overrides via `LOCALCONF.lsp[<filetype>]` set in `lua/local/init.lua`.
+-- Pass `defaults` as the fallback list when no local override exists.
+function helper.enable_lsp(defaults)
+  local ft = vim.bo.filetype
+  local servers = (LOCALCONF and LOCALCONF.lsp and LOCALCONF.lsp[ft]) or defaults
+  for _, name in ipairs(servers) do
+    vim.lsp.enable(name)
+  end
+end
+
 return helper

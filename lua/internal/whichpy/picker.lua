@@ -1,7 +1,7 @@
 local SearchJob = require('internal.whichpy.search')
 local config = require('internal.whichpy.config').config
-local handle_select = require('internal.whichpy.envs').handle_select
-local get_envs = require('internal.whichpy.envs').get_envs
+local envs = require('internal.whichpy.envs')
+local util = require('internal.whichpy.util')
 
 local Picker = {}
 
@@ -9,12 +9,11 @@ function Picker:setup()
   return vim.tbl_deep_extend('force', { prompt = 'Select Python Interpreter' }, config.picker or {})
 end
 
-function Picker:_show(opts, envs)
-  -- print('Picker:_show', vim.inspect(opts), vim.inspect(envs))
+function Picker:_show(opts, items)
   vim.schedule(function()
-    vim.ui.select(envs, opts, function(choice)
+    vim.ui.select(items, opts, function(choice)
       if choice ~= nil then
-        handle_select(choice)
+        envs.handle_select(choice)
       end
     end)
   end)
@@ -22,20 +21,34 @@ end
 
 function Picker:_show_factor(opts)
   return function()
-    self:_show(opts, get_envs())
+    self:_show(opts, envs.get_envs())
   end
 end
 
-function Picker:show()
-  local opts = self:setup()
-  -- self:_show_factor(opts)
-  if SearchJob:status() == nil then
-    SearchJob:update_hook(nil, self:_show_factor(opts))
+---@param opts? { force?: boolean }
+function Picker:show(opts)
+  opts = opts or {}
+  local select_opts = self:setup()
+  local status = SearchJob:status()
+
+  if opts.force then
+    if status ~= nil and status ~= 'dead' then
+      util.notify('Search in progress; reusing current run.')
+      SearchJob:update_hook(nil, self:_show_factor(select_opts))
+      return
+    end
+    envs.set_envs({})
+    SearchJob:reset()
+    status = nil
+  end
+
+  if status == nil then
+    SearchJob:update_hook(nil, self:_show_factor(select_opts))
     SearchJob:start()
-  elseif SearchJob:status() ~= 'dead' then
-    SearchJob:update_hook(nil, self:_show_factor(opts))
+  elseif status ~= 'dead' then
+    SearchJob:update_hook(nil, self:_show_factor(select_opts))
   else
-    self:_show(opts, get_envs())
+    self:_show(select_opts, envs.get_envs())
   end
 end
 

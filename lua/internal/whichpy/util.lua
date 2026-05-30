@@ -16,6 +16,9 @@ M.get_interpreter_path = function(dir, case, python3)
 end
 
 function M.notify(msg, level)
+  if type(level) == 'table' then
+    level = level.level
+  end
   level = level or vim.log.levels.INFO
   vim.notify(msg, level, { title = 'WhichPy' })
 end
@@ -40,12 +43,35 @@ function M.deduplicate(list)
   return res
 end
 
-function M.make_iter(data)
-  return function()
-    return coroutine.wrap(function()
-      coroutine.yield(data)
-    end)
+---@return string
+function M.cache_filename()
+  return (vim.fn.getcwd():gsub('[\\/:]+', '%%'))
+end
+
+---@param python_path string
+---@return string|nil
+function M.read_pyvenv_version(python_path)
+  local cfg = vim.fs.joinpath(vim.fs.dirname(vim.fs.dirname(python_path)), 'pyvenv.cfg')
+  local f = io.open(cfg, 'r')
+  if not f then
+    return nil
   end
+  local version
+  for line in f:lines() do
+    local v = line:match('^%s*version_info%s*=%s*([%d%.]+)') or line:match('^%s*version%s*=%s*([%d%.]+)')
+    if v then
+      version = v
+      break
+    end
+  end
+  f:close()
+  return version
+end
+
+---@param dir_name string
+---@return string|nil
+function M.parse_uv_dir_version(dir_name)
+  return dir_name:match('^[%w]+%-(%d[%d%.]*)')
 end
 
 return M

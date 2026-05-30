@@ -24,14 +24,16 @@ function Locator:find()
         local path = get_interpreter_path(vim.fs.joinpath(dir, name), 'bin')
         if vim.uv.fs_stat(path) then
           if not self.venv_only then
-            coroutine.yield(InterpreterInfo:new(self, path))
+            coroutine.yield(InterpreterInfo:new(self, path, name))
           end
           local envs_dir = vim.fs.joinpath(dir, name, 'envs')
-          for name2, t2 in vim.fs.dir(envs_dir) do
-            if t2 == 'directory' then
-              local path2 = get_interpreter_path(vim.fs.joinpath(envs_dir, name2), 'bin')
-              if vim.uv.fs_stat(path2) then
-                coroutine.yield(InterpreterInfo:new(self, path2))
+          if vim.uv.fs_stat(envs_dir) then
+            for name2, t2 in vim.fs.dir(envs_dir) do
+              if t2 == 'directory' then
+                local path2 = get_interpreter_path(vim.fs.joinpath(envs_dir, name2), 'bin')
+                if vim.uv.fs_stat(path2) then
+                  coroutine.yield(InterpreterInfo:new(self, path2, name))
+                end
               end
             end
           end

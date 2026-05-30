@@ -1,1 +1,1 @@
-vim.lsp.enable('gopls')
+require('core.helper').enable_lsp({ 'gopls' })

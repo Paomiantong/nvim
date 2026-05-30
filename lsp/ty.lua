@@ -15,6 +15,6 @@ return {
     ty = {
       diagnosticMode = 'workspace',
       showSyntaxErrors = true,
-    }
-  }
+    },
+  },
 }

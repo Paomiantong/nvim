@@ -78,7 +78,7 @@ M.handle_select = function(selected, should_cache)
   if config.update_path_env then
     local delimiter = (is_win and ';') or ':'
     if not should_backup_original then
-      vim.env.PATH = vim.env.PATH:gsub(vim.fs.dirname(curr_interpreter_path) .. delimiter, '', 1)
+      vim.env.PATH = vim.env.PATH:gsub(vim.pesc(vim.fs.dirname(curr_interpreter_path) .. delimiter), '', 1)
     end
     vim.env.PATH = vim.fs.dirname(selected.path) .. delimiter .. vim.env.PATH
 
@@ -88,9 +88,8 @@ M.handle_select = function(selected, should_cache)
   -- cache
   if should_cache then
     vim.fn.mkdir(config.cache_dir, 'p')
-    local filename = vim.fn.getcwd():gsub('[\\/:]+', '%%')
-    local f = assert(io.open(vim.fs.joinpath(config.cache_dir, filename), 'wb'))
-    f:write(selected.path .. '\n' .. selected.locator_name .. '\n' .. selected.version)
+    local f = assert(io.open(vim.fs.joinpath(config.cache_dir, util.cache_filename()), 'wb'))
+    f:write(selected.path .. '\n' .. selected.locator_name .. '\n' .. (selected.version or ''))
     f:close()
   end
 
@@ -98,6 +97,16 @@ M.handle_select = function(selected, should_cache)
     orig_interpreter_path = _orig_interpreter_path
   end
   curr_interpreter_path = selected.path
+
+  vim.api.nvim_exec_autocmds('User', {
+    pattern = 'WhichPySelected',
+    data = {
+      path = selected.path,
+      name = env_name,
+      locator = selected.locator_name,
+      version = selected.version,
+    },
+  })
 
   if config.after_handle_select then
     config.after_handle_select(selected)
@@ -133,20 +142,22 @@ M.handle_reset = function()
   -- $PATH
   if config.update_path_env then
     local delimiter = (is_win and ';') or ':'
-    vim.env.PATH = vim.env.PATH:gsub(vim.fs.dirname(curr_interpreter_path) .. delimiter, '', 1)
+    vim.env.PATH = vim.env.PATH:gsub(vim.pesc(vim.fs.dirname(curr_interpreter_path) .. delimiter), '', 1)
   end
 
   -- cache
-  local filename = vim.fn.getcwd():gsub('/', '%%')
-  os.remove(vim.fs.joinpath(config.cache_dir, filename))
+  os.remove(vim.fs.joinpath(config.cache_dir, util.cache_filename()))
 
   orig_interpreter_path = nil
   curr_interpreter_path = nil
+  env_name = nil
+
+  vim.api.nvim_exec_autocmds('User', { pattern = 'WhichPyReset' })
 end
 
 M.retrieve_cache = function()
-  local filename = vim.fn.getcwd():gsub('/', '%%')
-  local f = io.open(vim.fs.joinpath(config.cache_dir, filename), 'r')
+  local cache_path = vim.fs.joinpath(config.cache_dir, util.cache_filename())
+  local f = io.open(cache_path, 'r')
   if not f then
     return
   end
@@ -158,10 +169,24 @@ M.retrieve_cache = function()
   end
   f:close()
 
-  M.handle_select(
-    InterpreterInfo:new(require('internal.whichpy.locator').get_locator(lines[2] or 'global'), lines[1], lines[3]),
-    false
-  )
+  local path = lines[1]
+  if not path or path == '' or not vim.uv.fs_stat(path) then
+    os.remove(cache_path)
+    return
+  end
+
+  local locator = require('internal.whichpy.locator').get_locator(lines[2] or 'global')
+    or require('internal.whichpy.locator').get_locator('global')
+  if not locator then
+    return
+  end
+
+  local version = lines[3]
+  if version == '' then
+    version = nil
+  end
+
+  M.handle_select(InterpreterInfo:new(locator, path, version), false)
 end
 
 M.current_selected = function()

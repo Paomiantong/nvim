@@ -17,17 +17,17 @@ end
 -- 读取当前 client 上的 ty python 配置（ty.configuration.environment.python）
 local function get_ty_python_path_from_settings(settings)
   local ty = settings.ty
-  if type(ty) ~= "table" then
+  if type(ty) ~= 'table' then
     return nil
   end
 
   local cfg = ty.configuration
-  if type(cfg) ~= "table" then
+  if type(cfg) ~= 'table' then
     return nil
   end
 
   local env = cfg.environment
-  if type(env) ~= "table" then
+  if type(env) ~= 'table' then
     return nil
   end
 
@@ -44,7 +44,7 @@ local function set_ty_python_path_on_settings(settings, python_path)
 end
 
 local function persist_ty_settings(client)
-  if type(vim.lsp.config) ~= "function" then
+  if type(vim.lsp.config) ~= 'function' then
     return
   end
 
@@ -59,17 +59,17 @@ local function restart_lsp_client(client)
   local ok = pcall(function()
     if vim.cmd.lsp then
       -- 等价于 :lsp restart {client.name}
-      vim.cmd.lsp({ "restart", client.name })
+      vim.cmd.lsp({ 'restart', client.name })
       return true
     end
-    error("vim.cmd.lsp not available")
+    error('vim.cmd.lsp not available')
   end)
   if ok then
     return
   end
 
   -- 旧命令：:LspRestart <client_id>
-  pcall(vim.cmd, ("LspRestart %s"):format(client.id))
+  pcall(vim.cmd, ('LspRestart %s'):format(client.id))
 end
 
 function M:snapshot_settings(client)
@@ -80,9 +80,9 @@ function M:snapshot_settings(client)
 
   -- 优先从 client.settings 读；没有则退回 client.config.settings
   local settings = nil
-  if type(client.settings) == "table" then
+  if type(client.settings) == 'table' then
     settings = client.settings
-  elseif type(client.config) == "table" and type(client.config.settings) == "table" then
+  elseif type(client.config) == 'table' and type(client.config.settings) == 'table' then
     settings = client.config.settings
   end
 
@@ -106,7 +106,7 @@ function M:set_python_path(client, python_path, opts)
   set_ty_python_path_on_settings(client.config.settings, python_path)
   persist_ty_settings(client)
 
-  if type(client.settings) == "table" then
+  if type(client.settings) == 'table' then
     set_ty_python_path_on_settings(client.settings, python_path)
   end
 
@@ -120,4 +120,3 @@ function M:set_python_path(client, python_path, opts)
 end
 
 return M
-

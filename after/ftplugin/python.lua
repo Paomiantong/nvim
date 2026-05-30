@@ -1,3 +1,1 @@
--- vim.lsp.enable('basedpyright')
-vim.lsp.enable 'ty'
-vim.lsp.enable 'ruff'
+require('core.helper').enable_lsp({ 'ty', 'ruff' })
