@@ -1,4 +1,4 @@
 ---@class InternalWhichPy.LspHandler
----@field set_python_path fun(self: InternalWhichPy.LspHandler, client: vim.lsp.Client, python_path: string)
+---@field set_python_path fun(self: InternalWhichPy.LspHandler, client: vim.lsp.Client, python_path: string|nil, opts?: { restart?: boolean })
 ---@field snapshot_settings fun(self: InternalWhichPy.LspHandler, client: vim.lsp.Client)
 ---@field restore_snapshot fun(self: InternalWhichPy.LspHandler, client: vim.lsp.Client)

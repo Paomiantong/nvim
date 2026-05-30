@@ -39,15 +39,15 @@ map.a({
   ['[b'] = cmd('bp'),
 })
 
--- window
-map.a({
-  -- window jump
-  --up
-  ['<C-k>'] = '<C-w>k',
-  --down
-  ['<C-j>'] = '<C-w>j',
-  --left
-  ['<C-h>'] = '<C-w>h',
-  --right
-  ['<C-l>'] = '<C-w>l',
-})
+-- window #use vim-tmux-navigator
+-- map.a({
+--   -- window jump
+--   --up
+--   ['<C-k>'] = '<C-w>k',
+--   --down
+--   ['<C-j>'] = '<C-w>j',
+--   --left
+--   ['<C-h>'] = '<C-w>h',
+--   --right
+--   ['<C-l>'] = '<C-w>l',
+-- })

@@ -9,3 +9,5 @@ telescope.log
 **/test
 lua/modules/local
 lua/local
+
+.claude/

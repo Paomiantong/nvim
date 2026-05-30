@@ -23,7 +23,7 @@ function M.lsp_attach_callback(args)
     if M._clients[client_name] == nil then
       config.lsp[client_name]:snapshot_settings(client)
     end
-    config.lsp[client_name]:set_python_path(client, selected)
+    config.lsp[client_name]:set_python_path(client, selected, { restart = false })
   end
   M._clients[client_name] = client_id
 end
